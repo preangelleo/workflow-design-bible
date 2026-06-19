@@ -41,8 +41,8 @@ that knows how to run and improve itself.
 3. **Four-layer architecture** — CEO → sub-agent prompt → skill → MCP/CLI; pointers down, details never up.
 4. **Single source of truth + pointers** — the constitution stays lean forever.
 5. **Global vs local capabilities** — reuse what's shared, build only what's unique.
-6. **Reflection is always the last step** — two loops: per-cycle + cross-session.
-7. **Constitution-as-code** — a `doctor` command keeps the docs' claims equal to filesystem reality.
+6. **Reflection is always the last step** — two loops: per-cycle + cross-session; event-triggered so it survives disuse, not "remember to."
+7. **Constitution-as-code** — a fail-closed `doctor` command, wired to a change-event, keeps the docs' claims equal to filesystem reality.
 8. **A standard project shape** — root constitution + `documentation/` from birth.
 
 Full detail lives in [`SKILL.md`](./SKILL.md).
@@ -78,6 +78,7 @@ skill runs the interview and generates the constitution skeleton.
 | [`SKILL.md`](./SKILL.md) | The meta system prompt: philosophies + interview protocol + generation rules. The main artifact. |
 | [`templates/CLAUDE.md.template`](./templates/CLAUDE.md.template) | The fill-in constitution skeleton (Rules **and** Don'ts). |
 | [`templates/configuration.json.template`](./templates/configuration.json.template) | The brand single-source-of-truth. |
+| [`templates/durable_self_iterate.md`](./templates/durable_self_iterate.md) | Reference recipe for Philosophies 6–7: a fail-closed `doctor` skeleton + the change-event trigger that fires the self-iterate loop. |
 | [`CHANGELOG.md`](./CHANGELOG.md) | Version history (semver). |
 | [`VERSION`](./VERSION) | Current version, for tooling / online upgrades. |
 

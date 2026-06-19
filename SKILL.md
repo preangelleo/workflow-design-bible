@@ -1,7 +1,7 @@
 ---
 name: workflow-design-bible
 description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
-version: 1.0.0
+version: 1.1.0
 license: MIT
 ---
 
@@ -115,6 +115,27 @@ keep them separate:
   adopts/discards, then archives. Plus a `HANDOFF` note carries unfinished
   business between sessions.
 
+**The durability failure to design around.** "Reflection is always the last step"
+written as *prose* is an aspiration, not a guarantee: it lives only as "the agent
+should remember to reflect at the end," so under deadline pressure it is the first
+thing dropped, and within a few cycles the loop has quietly fallen into disuse —
+the most common way a self-improving project stops improving. A loop that depends
+on being *remembered* is not a loop. Make it survive disuse with two mechanics:
+- **Trigger on the event, not on memory.** Bind reflection to a *change* rather
+  than to a remembered habit. A meaningful state transition — a leaf change landing
+  (CLI / skill / SP / template), a build dir filling, a cycle marked complete —
+  should *fire* the reflection/consistency pass, not wait for the agent to recall
+  it. Use a real event primitive (a pre-commit / pre-push hook, a file-watch on the
+  build or `reflections/` dir, a CI step) so the loop runs because something
+  changed. A coarse periodic fail-safe is fine as a backstop to bound worst-case
+  staleness — but it is the backstop, never the primary cadence.
+- **Converge the loop toward a deterministic anchor, not a vibe.** Open-ended "did
+  we do well?" reflection erodes; reflection that ends by re-asserting a *machine-
+  checkable* invariant compounds. That anchor is Philosophy 7's `doctor` (claims ==
+  reality, **fail-closed**): the reflection step is "done" only when `doctor` exits
+  zero. This is what fuses Loop A to Philosophy 7 — reflection stops being a soft
+  retrospective and becomes "drive the project back to a green deterministic check."
+
 ### Philosophy 7 · Constitution-as-code: a deterministic self-check keeps claims == reality
 A constitution drifts: it claims "9 sub-agents, 7 skills" while the filesystem says
 otherwise. So every project ships a deterministic **`doctor` / consistency-lint**
@@ -123,6 +144,22 @@ skills, CLI subcommands, asset counts, the lifeline DB) and **exits non-zero on
 drift**. This is the machine backstop for the "propagation consistency" rule: any
 leaf change (CLI/skill/SP/template) must, before it is done, re-confirm the upper
 layers' contracts — and `doctor` enforces it mechanically.
+
+Two properties make `doctor` actually load-bearing instead of decorative:
+- **Fail-closed, not advisory.** A non-zero exit is a *gate*, not a warning the
+  agent can talk past. Wire it where it blocks "done": a pre-commit / pre-push hook,
+  a CI status check, the final assert of the reflection step. A `doctor` that only
+  prints and exits zero is theater; drift slips through and the docs rot anyway.
+- **Wired to a trigger, so it runs without being remembered.** The single most
+  common way `doctor` fails is that it exists but nothing ever invokes it. Bind it
+  to the change event (Philosophy 6's trigger mechanic) so a leaf change *cannot
+  land green while the upper-layer contract is stale*. The discipline and the
+  machine check are the same act: the leaf change fires the consistency pass, and
+  the pass must end green.
+> A reference recipe — a generic, language-agnostic `doctor` skeleton plus the
+> change-event trigger that fires it — lives in
+> [`templates/durable_self_iterate.md`](templates/durable_self_iterate.md). Drop a
+> tuned copy into the generated project's `documentation/`.
 
 ### Philosophy 8 · Standard shape (root constitution + documentation/)
 The project folder has a fixed shape from birth:
@@ -257,8 +294,19 @@ Ask which archetype the project is; each preloads a different spine draft:
    one `documentation/<topic>.md` per single-source rule identified in Round 5.
 4. Create the empty skeletons (`.claude/agents/`, `.claude/skills/`,
    `reflections/`, `reports/`, `HANDOFF.md`) with placeholders.
-5. Recommend (do not implement) a `doctor` / consistency-lint subcommand for the
-   project's future CLI, per Philosophy 7.
+5. Scaffold the durability loop, don't just recommend it (per Philosophies 6–7).
+   Recommending a `doctor` "for later" is itself the durability failure — the
+   anchor that's never built can't anchor anything. Instead:
+   (a) drop a tuned copy of [`templates/durable_self_iterate.md`](templates/durable_self_iterate.md)
+       into `documentation/`;
+   (b) register a `{{core}} doctor` subcommand stub (it may start as a near-empty
+       check that lists agents/skills/CLI subcommands and exits non-zero on a
+       claim/reality mismatch — grown out later, but present and **fail-closed**
+       from birth);
+   (c) wire one change-event trigger that fires it (a pre-commit / pre-push hook or
+       a file-watch on the build / `reflections/` dir), so the self-iterate loop
+       runs on change, not on memory. A coarse periodic run is the fail-safe, not
+       the primary cadence.
 
 ---
 
@@ -289,6 +337,13 @@ Ask which archetype the project is; each preloads a different spine draft:
       at the fan-out points.
 - [ ] Each local skill states which MCP / CLI it is built from.
 - [ ] Concrete brand values live only in `configuration.json`; the constitution is pointers.
-- [ ] A `doctor` / consistency-lint command is recommended for the project CLI.
+- [ ] A `doctor` / consistency-lint command is **scaffolded** (not merely
+      recommended) for the project CLI, and it is **fail-closed** (non-zero exit on
+      drift).
+- [ ] The self-iterate loop is **event-triggered** — at least one change-event hook
+      (pre-commit / pre-push / file-watch) fires `doctor` / reflection on change;
+      any periodic run is only a fail-safe, not the primary cadence.
+- [ ] A tuned copy of `durable_self_iterate.md` is dropped into the project's
+      `documentation/`.
 - [ ] The file map matches the directory actually generated.
 - [ ] Every `{{placeholder}}` has been replaced.
