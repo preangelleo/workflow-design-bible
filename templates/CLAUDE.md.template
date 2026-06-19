@@ -73,6 +73,11 @@ Non-negotiable constraints, **priority-ordered — earlier always outranks later
 > **Two reflection loops:** Loop A = per-cycle reflection → `reflections/` (permanent).
 > Loop B = cross-session: scheduled reports land in `reports/`; the session startup
 > ritual scans, adopts/discards, archives. Unfinished work is carried in `HANDOFF.md`.
+> **Durability:** the self-iterate loop is **event-triggered, not remembered** — a
+> change event ({{pre-commit/pre-push hook · file-watch on build or `reflections/`}})
+> fires reflection + `{{core}} doctor`; the step is "done" only when `doctor` exits
+> zero (fail-closed). A periodic run is a fail-safe, not the primary cadence. See
+> `documentation/durable_self_iterate.md`.
 
 ## 🎯 Locked strategic decisions (settled — do not re-litigate)   ← optional but recommended
 | Dimension | Decision | Why |
@@ -84,7 +89,7 @@ Non-negotiable constraints, **priority-ordered — earlier always outranks later
 - **Capability axis:** deterministic code (executed, never in context) ──documented──▶ Skill (`.claude/skills/<name>/SKILL.md`).
 - **Role axis:** sub-agent (the worker) ──defined by──▶ its system prompt (`.claude/agents/<name>.md`); the SP holds pointers ("this role mainly uses skill X").
 - **Rules:** ① freeze recurring mechanical steps into CLI subcommands (deterministic, zero-token); ② a reusable capability = a skill pointing at the root code; ③ the LLM decides, the CLI executes.
-> **🔗 Propagation-consistency standing rule:** before any leaf change (CLI / skill / SP / template) is done, run a propagation analysis and confirm each upper layer's contract is still in sync. Machine backstop = `{{core}} doctor` (claims vs filesystem reality; non-zero on drift).
+> **🔗 Propagation-consistency standing rule:** before any leaf change (CLI / skill / SP / template) is done, run a propagation analysis and confirm each upper layer's contract is still in sync. Machine backstop = `{{core}} doctor` (claims vs filesystem reality; **non-zero on drift, fail-closed**) — wired to a change-event trigger ({{pre-commit/pre-push hook}}) so a leaf change cannot land green while an upper-layer contract is stale. Recipe: `documentation/durable_self_iterate.md`.
 
 ### Skill index (auto-visible when relevant, loaded on demand)
 **Local (built/forked for this project):**
