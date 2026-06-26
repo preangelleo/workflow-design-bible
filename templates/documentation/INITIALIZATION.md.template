@@ -1,0 +1,27 @@
+# INITIALIZATION — {{PROJECT_NAME}}
+
+> One-time first-deploy setup: the credentials to collect and the steps to run **once**
+> before the project can operate. Read **on demand** (not part of the per-session boot
+> set) — typically only at first setup or when onboarding a new machine.
+
+## 🔐 Credentials checklist (the user provides these — never commit them)
+| Credential / account | Used for | Where it goes |
+|---|---|---|
+| {{e.g. OPENROUTER_API_KEY}} | {{LLM calls / vector-memory embeddings}} | `{{.env}}` (gitignored) |
+| {{e.g. platform publish token}} | {{publishing step}} | `{{.env}}` |
+| {{…}} | | |
+
+> Stop-and-ask rule: a missing credential is one of the only two reasons the CEO
+> interrupts the user (the other is a subjective business judgment).
+
+## ⚙️ One-time setup steps
+1. {{create/activate the runtime env, e.g. the project's `.venv` + launcher}}
+2. {{install deps}}
+3. {{initialize the memory store / lifeline DB}}
+4. {{(optional) enable the vector DB: set OPENROUTER_API_KEY + model in `.env`, then `{{core}} memory init`}}
+5. {{first deploy / first dry-run — verify with `{{core}} doctor`}}
+
+## ✅ Done when
+- `{{core}} doctor` passes (STRUCTURE.json claims == filesystem reality).
+- A dry-run of the pipeline spine completes end to end without touching production.
+- `/start-session` reads cleanly and reports a coherent "where we are."

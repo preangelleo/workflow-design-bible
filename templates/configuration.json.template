@@ -2,6 +2,7 @@
   "project": {
     "name": "",
     "codename": "",
+    "agent_name": "",
     "type": "",
     "created": "",
     "phase": ""
@@ -28,5 +29,5 @@
   },
   "languages": [],
   "channels_or_imprints": [],
-  "notes": "Add or remove fields per project archetype. ALL concrete values that are referenced in more than one place (pricing / colors / attribution) live ONLY here; CLAUDE.md and sub-agents reference them by pointer."
+  "notes": "Lives at documentation/configuration.json. The brand single source of truth. ALL concrete values referenced in more than one place (pricing / colors / attribution) live ONLY here; CLAUDE.md, IDENTITY.md, and sub-agents reference them by pointer. IDENTITY.md/SOUL.md hold the PROSE self; this file holds the STRUCTURED brand values."
 }

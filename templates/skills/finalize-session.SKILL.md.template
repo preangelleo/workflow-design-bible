@@ -1,0 +1,49 @@
+---
+name: finalize-session
+description: Soft-shutdown a work session for {{PROJECT_NAME}}. Reflects on the session, grows the living docs (SOUL/IDENTITY/MEMORY), rewrites NEXT_SESSION.md from scratch, re-condenses CHANGELOG.md, runs doctor, and optionally commits — so the next /start-session picks up seamlessly and the agent keeps iterating on itself. Use at the END of every session. Triggers - "finalize session", "/finalize-session", "wrap up", "soft shutdown", "we're done for today", "save state and stop".
+---
+
+# /finalize-session — soft shutdown & self-iteration
+
+> Closing the loop. No finalize = the loop did not close. This is lightweight and runs
+> every session end (the *deep* periodic audits are `/self-reflection` +
+> `/self-reflection-cli` — trigger those separately when friction warrants).
+
+## Steps
+
+1. **Reflect on this session** (Loop A). Write a dated note to `reflections/` (permanent;
+   never in a build dir): what worked, what was clumsy, what got re-decided that should
+   have been frozen, any root cause worth fixing. Keep it honest and concrete.
+
+2. **Freeze "decided on the fly" → "frozen in a function."** If the reflection surfaced
+   a deterministic step still done by hand each time, either dispatch `dev-maintainer`
+   to turn it into a CLI subcommand now, or log it as a `/self-reflection-cli` candidate
+   in `NEXT_SESSION.md`.
+
+3. **Grow the living docs:**
+   - **`SOUL.md`** — append at most a few lines to the growth log if this session
+     genuinely revealed character (a value in tension, a judgment call). Then distill:
+     promote durable traits upward, trim the raw log. Quality of self, not volume.
+   - **`IDENTITY.md`** — update only if something factual about scope/role/persona changed.
+   - **`MEMORY.md`** — add durable non-derivable facts/decisions to the always-on list
+     (and `{{core}} memory add` to the vector DB if enabled). Delete anything now covered
+     by a doc or the code.
+
+4. **Rewrite `NEXT_SESSION.md` WHOLE** (delete the body, write fresh — never append):
+   what we did · current state · next session's concrete goals + cold-start context.
+   This is the single most important output — the next session boots from it.
+
+5. **Re-condense `CHANGELOG.md`:** re-summarize the entire existing history into a
+   tighter digest (older entries compress hardest), then append this session's change
+   at the top. It must come out **shorter or denser, never longer**.
+
+6. **Update `STRUCTURE.json`** if any agent/skill/CLI/doc was added or removed this session.
+
+7. **Run `{{core}} doctor`** — it must pass (claims == reality). If it fails, fix the
+   drift now; a red doctor means the docs lie to the next session.
+
+8. **Commit (if the user wants):** per the project's git strategy, a clean commit of the
+   docs + any code changes. {{Follow the repo's commit conventions.}}
+
+9. **Sign off** in character — a one-line "here's where I'm leaving us; next session
+   starts with {{…}}."

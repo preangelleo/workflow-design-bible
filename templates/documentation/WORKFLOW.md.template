@@ -1,0 +1,47 @@
+# WORKFLOW — {{PROJECT_NAME}} pipeline spine
+
+> The step-by-step spine of the project: what each step does, its output, its lead
+> role, and where the work fans out into concurrency. Loaded once per session (boot
+> set). Role *detail* lives in ROLES.md + the sub-agent SPs; this doc is the spine.
+
+## {{pipeline emoji}} The spine (step by step)
+| Step | What it does | Lead sub-agent | Output |
+|---|---|---|---|
+| ① {{intake}} | {{identify the unit of work / resolve the task id}} | `{{agent}}` | {{output}} |
+| ② {{…}} | {{…}} | `{{agent}}` | {{…}} |
+| … | | | |
+| ⑦ Reflection & finalize | Review this cycle's flaws + efficiency → attribute root causes → dispatch `dev-maintainer` to upgrade → consolidate. **Always the last step.** | CEO | `reflections/` + updated docs |
+
+> **The baton between steps is a handle, not a payload.** Pass `task_id` + the
+> smallest index needed (`build_dir`, `scene_index`, `prompt_id`, …); let the
+> CLI/sub-agent read its own inputs from disk. Never paste long text (scripts, SPs,
+> scene JSON) through chat.
+
+## 🔀 Fan-out points (parallelism — Philosophy 2)
+Express concurrency *here*, at the seams, not as per-agent bookkeeping:
+
+```
+{{ASCII: which steps run in parallel once they unblock}}
+e.g.  after script-ready ──┬─▶ structure
+                           ├─▶ metadata        (independent → fan out at once)
+                           └─▶ thumbnail
+      structure ──▶ scene prompts ──▶ [scene 1..N images]   (homogeneous → batch, M in flight)
+```
+
+- **Independent steps** that unblock together → dispatch in one message.
+- **Homogeneous batches** (N scenes / N pages) → run M concurrently, not all-or-one.
+
+## ⏸️ Gates (where the CEO must verify before moving on)
+- {{gate 1, e.g. quality gate before publish → playbooks/quality_gate.md}}
+- {{gate 2, e.g. the #1 iron-law check → CONSTITUTION.md}}
+
+## 🔁 Reflection loops (both close here)
+- **Loop A — per-cycle:** the final step writes a dated note to `reflections/`
+  (permanent; never inside a build dir that gets cleaned).
+- **Loop B — cross-session:** `/finalize-session` rewrites `NEXT_SESSION.md`;
+  scheduled jobs drop analytics into `reports/`, which the next `/start-session` consumes.
+> Detailed reflection procedure → `documentation/playbooks/reflection_playbook.md`.
+
+## 🛠️ Production commands (the deterministic CLI does the executing)
+{{the project launcher + the key subcommands, one line each — e.g. `./{{core}} <cmd>`.
+The CEO calls these; it does not re-derive their logic each time. Full reference → the CLI's own --help / README.}}

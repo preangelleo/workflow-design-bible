@@ -1,0 +1,21 @@
+# CHANGELOG — {{PROJECT_NAME}}
+
+<!--
+  ⚠️ RE-CONDENSE rule: `/finalize-session` keeps this file short FOREVER. Each finalize:
+  1. Re-summarize the entire existing history below into an ever-tighter digest
+     (older entries compress hardest — collapse them into themes, drop the detail).
+  2. Then append the current change as a fresh dated entry at the top.
+  Result = [highly compressed digest of all past] + [this release]. It never grows
+  unbounded; it gets denser, not longer. Semantic versioning.
+-->
+
+## [Unreleased] / {{next version}}
+### {{date}}
+- {{this session's change, one or two lines}}
+
+---
+
+## 📚 Condensed history (re-compressed each finalize — newest themes first)
+- **{{vX.Y}} ({{period}})** — {{one line capturing the whole arc of that era}}
+- **{{v0.1}} (genesis)** — project scaffolded from the Workflow Design Bible: document
+  system + session lifecycle + roster registered; build began.

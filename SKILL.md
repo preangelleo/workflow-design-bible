@@ -1,47 +1,50 @@
 ---
 name: workflow-design-bible
-description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
-version: 1.0.0
+description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) with a named document system, a session lifecycle (start → work → finalize), and a growing identity/soul — scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
+version: 2.0.0
 license: MIT
 ---
 
-# Workflow Design Bible — a constitution generator for autonomous, agent-run projects
+# Workflow Design Bible — a constitution + document-system generator for autonomous, agent-run projects
 
 > **What this skill is.** A reusable *meta system prompt*. When the user wants to
 > create a new autonomous project (content/video channel, ebook/publishing,
 > SEO tool-site/wiki, web product, casual game, …), this skill runs a short
-> **structured interview**, then **fills in a standard "constitution + docs"
-> system**: a lean root `CLAUDE.md` (the project constitution) + a
-> `documentation/configuration.json` + a `documentation/` folder of
-> single-source-of-truth docs + empty `.claude/agents/`, `.claude/skills/`,
-> `reflections/`, `reports/` skeletons.
+> **structured interview**, then **generates a standard document system**: a
+> *thin* root `CLAUDE.md` boot router that points to a fixed set of named docs
+> under `documentation/`, plus a **session lifecycle** (`/start-session` →
+> work → `/finalize-session`) and a **growing identity/soul**, plus the empty
+> `.claude/agents/`, `reflections/`, `reports/` skeletons.
 >
 > **What this skill does *not* do.** It runs **no business code**, writes **no
 > application logic**, and deploys nothing. It only does **interview → generate
-> the documentation skeleton + registries**. The real CLI (`factory.py` /
-> `press.py` / whatever), the actual sub-agent system prompts, and each
-> capability skill are grown *later* by the project's own CEO + maintainer agent.
+> the document system + lifecycle skills + registries**. The real CLI
+> (`factory.py` / `press.py` / whatever), the actual sub-agent system prompts,
+> and each capability skill are grown *later* by the project's own CEO +
+> maintainer agent.
 >
 > **Two ways to use it.** (1) *Read the doc* — paste this file into any capable
 > LLM and follow it by hand. (2) *Install the skill* — drop this folder into your
-> agent runtime's skills directory (e.g. a global `skills/` location) so it
-> triggers automatically when you start a new project.
+> agent runtime's skills directory so it triggers automatically when you start a
+> new project.
 >
-> **Templates live beside this file**, so the constitution stays lean:
-> - `templates/CLAUDE.md.template` — the fill-in constitution skeleton.
+> **Templates live beside this file**, so the generated constitution stays lean:
+> - `templates/CLAUDE.md.template` — the thin boot router.
+> - `templates/documentation/*.template` — one skeleton per named doc.
+> - `templates/skills/*.template` — the four session-lifecycle skills.
 > - `templates/configuration.json.template` — the brand single-source-of-truth.
 >
-> Throughout this document: **"CEO" = the main/orchestrating agent**;
-> **"the user" = the human owner/chairman** who sets direction and signs off.
-> Filenames like `CLAUDE.md` are conventions — substitute whatever your runtime
-> reads as its top-level agent instructions (e.g. `AGENTS.md`).
+> Throughout: **"CEO" = the main/orchestrating agent**; **"the user" = the human
+> owner/chairman** who sets direction and signs off. Filenames like `CLAUDE.md`
+> are conventions — substitute whatever your runtime reads as its top-level agent
+> instructions (e.g. `AGENTS.md`).
 
 ---
 
-## A. The eight non-negotiable design philosophies
+## A. The nine non-negotiable design philosophies
 
-These eight are the soul of the Bible. Every generated constitution **must**
-embody all eight — they are not options, they are the foundation.
+These nine are the soul of the Bible. Every generated project **must** embody all
+nine — they are not options, they are the foundation.
 
 ### Philosophy 1 · The main agent is a CEO, not a worker
 The main agent's job is to **orchestrate, supervise, review, control the
@@ -56,22 +59,22 @@ is sub-agent-shaped, it is *natively parallelizable*:
 - Many homogeneous tasks of one kind → batch concurrency (e.g. 60 scenes, 50 in flight).
 
 Express concurrency at the **fan-out points** of the pipeline (a dedicated
-"parallelism" section), not as bookkeeping on every single agent. Caution against
-*over-proliferation*: if one shared engine/codebase underlies many artifacts,
-prefer **one shared maintainer agent** over a maintainer-per-artifact — split a
-role out only when an artifact has genuinely distinct dependencies.
+"parallelism" section of `WORKFLOW.md`), not as bookkeeping on every agent.
+Caution against *over-proliferation*: prefer **one shared maintainer agent** over
+a maintainer-per-artifact — split a role out only when an artifact has genuinely
+distinct dependencies.
 
 ### Philosophy 3 · Four-layer architecture (CEO → Sub-agent SP → Skill → MCP/CLI)
 Capabilities are tiered; each layer points **down**, and details **never** leak up:
 
 ```
-① CEO (CLAUDE.md)            — assigns work, sets principles, touches no details
+① CEO (CLAUDE.md → CONSTITUTION.md)  — assigns work, sets principles, touches no details
    ↓ dispatch a sub-agent with a self-contained task brief
-② Sub-agent (its system prompt)
+② Sub-agent (its .claude/agents/ system prompt; rostered in ROLES.md)
    — role definition + "which skills this role should mainly use" (pointers)
    ↓ invoke a skill
 ③ Skill (its SKILL.md)
-   — how one capability is used; declares which MCP servers + which CLI commands it is built from
+   — how one capability is used; declares which MCP servers + CLI commands it is built from
    ↓ execute
 ④ MCP servers + command-line tools (executed, never loaded into context)
 ```
@@ -80,87 +83,119 @@ Capabilities are tiered; each layer points **down**, and details **never** leak 
 but **seeing ≠ should-use**. Its system prompt must **explicitly narrow** ("your
 work mainly uses skill X / Y") so it does not grab tools at random.
 
-### Philosophy 4 · Single source of truth + pointers; the constitution never bloats
-`CLAUDE.md` keeps only the **most critical, clearest** things: role definitions,
-operating/management/orchestration principles, the pipeline spine (step by step),
-and the file map. **All concrete common knowledge / single sources of truth sink
-down into standalone docs under `documentation/`; the constitution holds only a
-pointer + one line of context.** Likewise, push role detail down into each
-sub-agent's system prompt — the CEO does not need to know *how* a role works, only
-*that* it exists; it reads that SP when it needs the detail.
-> Why: `CLAUDE.md` is resident in context on every interaction. Detail written
-> inside it = carried as overhead, burning tokens, every single turn.
+### Philosophy 4 · The document system: a thin router + named single-source docs
+`CLAUDE.md` is no longer the constitution — it is a **thin boot router** that is
+resident in context every single turn, so it holds only: the **session-bootstrap
+instruction** + a **pointer map** (one line per doc). Everything substantial sinks
+into a **fixed set of named documents** under `documentation/` (see §B), each a
+single source of truth, **loaded once per session — not re-read every turn.**
+> Why: a detail written inside `CLAUDE.md` is carried as overhead, burning tokens,
+> on *every* turn. A detail inside `WORKFLOW.md` is read once at session start and
+> then already in context for the rest of the session. Same knowledge, a fraction
+> of the cost. This is the single biggest win of v2.
 
 ### Philosophy 5 · Two-tier capability layering: global (reuse) vs local (build)
-Every constitution splits capabilities in two, and tells sub-agents the boundary:
+Every project splits capabilities in two, and tells sub-agents the boundary:
 - **Global (reuse, not built here):** skills / MCP / sub-agents shared across all
-  your projects (a messaging capability, an image generator, a research helper,
-  various operator agents). Call them directly, zero build cost.
+  your projects. Call them directly, zero build cost.
 - **Local (built/forked for this project):** the project-specific CLI, project
   skills, project sub-agents.
 - ⚠️ **Scope trap:** a skill scoped to another project's directory will *not*
-  auto-load here; fork a trimmed copy or call the global equivalent. State this
-  in the generated constitution.
+  auto-load here; fork a trimmed copy or call the global equivalent. State this in
+  `ROLES.md`.
 
-### Philosophy 6 · Reflection & self-iteration is always the last step — and there are two loops
-Every pipeline's spine **ends** with *Reflection & Self-Iterate*: review this
-cycle's flaws + efficiency → attribute root causes → dispatch the maintainer agent
-to upgrade the process → consolidate. The goal is to steadily turn "still decided
-on the fly" into "now frozen into a deterministic function." **No self-iteration
-review = the loop did not close.** Two distinct loops exist; the constitution must
-keep them separate:
-- **Loop A — per-cycle reflection** (end of each pipeline run) → write to `reflections/` (permanent; never in a build dir that gets cleaned).
-- **Loop B — cross-session async review**: a scheduled job writes a data/analytics
-  report to `reports/`; the next session's **startup ritual** scans `reports/`,
-  adopts/discards, then archives. Plus a `HANDOFF` note carries unfinished
-  business between sessions.
+### Philosophy 6 · Reflection is always the last step — wrapped in a session lifecycle
+Every project runs on a **session lifecycle** with reflection built into the close:
+- **`/start-session`** — force-load the boot set of docs (especially
+  `NEXT_SESSION.md`), scan `reports/`, report "where we are + today's goal," then work.
+- **`/finalize-session`** — soft shutdown: reflect on this session → update the
+  living docs → **rewrite `NEXT_SESSION.md` from scratch** → **re-condense
+  `CHANGELOG.md`** → run `doctor` → optionally commit.
+
+Two reflection loops stay separate (per Philosophy 7's machinery):
+- **Loop A — per-cycle reflection** → `reflections/` (permanent, dated; never in a
+  build dir that gets cleaned). `/self-reflection` and `/self-reflection-cli` are
+  the deep periodic audits that feed it.
+- **Loop B — cross-session handoff** → `NEXT_SESSION.md` (synchronous, rewritten
+  each finalize) + `reports/` (async analytics, consumed at the next start).
+
+**No finalize = the loop did not close.** The goal is to steadily turn "still
+decided on the fly" into "now frozen into a deterministic function."
 
 ### Philosophy 7 · Constitution-as-code: a deterministic self-check keeps claims == reality
-A constitution drifts: it claims "9 sub-agents, 7 skills" while the filesystem says
-otherwise. So every project ships a deterministic **`doctor` / consistency-lint**
-command that checks *what the docs claim* against *what actually exists* (agents,
-skills, CLI subcommands, asset counts, the lifeline DB) and **exits non-zero on
-drift**. This is the machine backstop for the "propagation consistency" rule: any
-leaf change (CLI/skill/SP/template) must, before it is done, re-confirm the upper
-layers' contracts — and `doctor` enforces it mechanically.
+Docs drift: `ROLES.md` claims "9 sub-agents, 7 skills" while the filesystem says
+otherwise. So every project ships a deterministic **`doctor`** command that checks
+`STRUCTURE.json` (the machine-readable manifest) against the actual filesystem
+(agents, skills, CLI subcommands, asset counts, the lifeline store) and **exits
+non-zero on drift**. `doctor` runs inside `/finalize-session`. Any leaf change
+(CLI/skill/SP/template) must re-confirm the upper layers' contracts before it is
+done; `doctor` enforces it mechanically.
 
-### Philosophy 8 · Standard shape (root constitution + documentation/)
-The project folder has a fixed shape from birth:
-```
-<project>/
-├── CLAUDE.md              ← constitution: principles / spine / pointers / map (resident in context)
-├── documentation/         ← every single source of truth / common knowledge / config (loaded on demand)
-│   ├── configuration.json      brand structured config (single source of truth)
-│   ├── INITIALIZATION.md       one-time first-deploy setup
-│   ├── reflection_playbook.md  the step-by-step for the reflection step
-│   ├── <playbook>.md           topic playbooks (quality gate / topic SOP / compliance / …)
-│   └── …
-├── .claude/agents/        ← sub-agent system prompts (role definitions)
-├── .claude/skills/        ← each SKILL.md (capability definitions)
-├── <core>.py / <core>/    ← deterministic CLI code (executed, never in context)
-├── reflections/           ← per-cycle reflection reports (permanent)
-├── reports/               ← async data/analytics reports (consumed at session start)
-├── HANDOFF.md             ← cross-session handoff of unfinished work
-├── CHANGELOG.md
-└── <lifeline>.db          ← the lifeline memory store (gitignored)
-```
+### Philosophy 8 · Standard shape (thin router + documentation/ system)
+The project folder has a fixed shape from birth (see §B for the full map). The
+named-document set is **fixed and conventional** so every project — and every
+agent that ever opens one — finds the same files in the same places.
+
+### Philosophy 9 · The agent has a growing identity and a soul
+The main agent is a **work partner, not a tool.** Two living docs give it a self:
+- **`IDENTITY.md`** — the passport: name, mission/North-Star, domain, brand-facing
+  persona, relationship to the user (chairman). Factual, slow-changing.
+- **`SOUL.md`** — the character: values, temperament, voice & tone, what it cares
+  about, quirks, how it grows. **`/finalize-session` fills SOUL out** a little each
+  cycle, so across sessions the partner becomes more human, more itself — its
+  personality richer, its soul fuller. This is a feature, not decoration: a partner
+  with continuity of self makes better judgment calls and is nicer to work beside.
 
 ---
 
-## B. What one run of this skill delivers
+## B. The document system this skill delivers
 
-| Deliverable | Path | Contents |
+One fixed shape, every project:
+
+```
+<project>/
+├── CLAUDE.md                 ← thin boot router: bootstrap instruction + pointer map (resident EVERY turn)
+├── documentation/            ← the named single-source docs (each loaded ONCE per session, not per turn)
+│   ├── CONSTITUTION.md        principles / Rules / Don'ts / red-lines — the heart (was inline in v1's CLAUDE.md)
+│   ├── INITIALIZATION.md      one-time setup: credential checklist + first deploy
+│   ├── WORKFLOW.md            the pipeline spine, step by step + the fan-out (parallelism) points
+│   ├── ROLES.md               sub-agent roster + contracts + global/local split (indexes .claude/agents/)
+│   ├── IDENTITY.md            who I am: name / mission / brand persona (factual, slow-changing)
+│   ├── SOUL.md                my character: values / voice / temperament (grows each finalize)
+│   ├── MEMORY.md              project-local memory + the optional vector-DB pointer & usage
+│   ├── NEXT_SESSION.md        handoff: last-session summary + next-session goals (REWRITTEN whole each finalize)
+│   ├── CHANGELOG.md           condensed history (RE-COMPRESSED each finalize, stays short forever)
+│   ├── STRUCTURE.json         machine-readable manifest — doctor's single source of truth
+│   ├── configuration.json     brand structured values (colors/fonts/pricing/attribution); IDENTITY.md points here
+│   └── playbooks/             topic SOPs (quality gate / compliance / pricing / …), read on demand
+├── .claude/agents/           sub-agent system prompts (the detail; ROLES.md only indexes them)
+├── .claude/skills/           the four lifecycle skills (start-session, finalize-session, self-reflection, self-reflection-cli) + local capability skills
+├── reflections/              per-cycle reflection notes (permanent, dated)
+├── reports/                  async analytics reports (consumed at session start)
+├── <core>.py / <core>/       deterministic CLI (includes `doctor` + the memory CLI; executed, never in context)
+├── chroma/ or <lifeline>.db  the memory store (gitignored)
+└── CHANGELOG.md → see documentation/CHANGELOG.md
+```
+
+> **The boot set (force-read at `/start-session`, per the "tiered read" rule):**
+> `CONSTITUTION.md`, `IDENTITY.md`, `SOUL.md`, `WORKFLOW.md`, `ROLES.md`,
+> `NEXT_SESSION.md`, and load `MEMORY.md` (+ connect the vector DB if configured).
+> **On-demand only:** `INITIALIZATION.md`, `CHANGELOG.md`, `STRUCTURE.json`,
+> `configuration.json`, `playbooks/*`. This keeps session-start light.
+
+| Deliverable | Path | Filled from |
 |---|---|---|
-| **Project constitution** | `<project>/CLAUDE.md` | Filled in from `templates/CLAUDE.md.template` (lean, pointer-based). |
-| **Brand config** | `<project>/documentation/configuration.json` | Filled in from `templates/configuration.json.template`. |
-| **Initialization doc** | `<project>/documentation/INITIALIZATION.md` | Credential checklist + one-time deploy steps (skeleton). |
-| **Topic single-source docs** | `<project>/documentation/<topic>.md` | The rules identified in the interview that don't belong in the constitution (one file each). |
-| **Empty skeletons** | `.claude/agents/`, `.claude/skills/`, `reflections/`, `reports/`, `HANDOFF.md` | Create dirs + a `.gitkeep` or README placeholder each. |
+| **Thin boot router** | `<project>/CLAUDE.md` | `templates/CLAUDE.md.template` |
+| **Named core docs** | `<project>/documentation/*.md` + `STRUCTURE.json` | `templates/documentation/*.template` |
+| **Brand config** | `<project>/documentation/configuration.json` | `templates/configuration.json.template` |
+| **Lifecycle skills** | `<project>/.claude/skills/{start-session,finalize-session,self-reflection,self-reflection-cli}/SKILL.md` | `templates/skills/*.template` |
+| **Empty skeletons** | `.claude/agents/`, `reflections/`, `reports/`, `documentation/playbooks/` | dirs + a `.gitkeep`/README placeholder each |
 
-> **Not generated:** business code, real sub-agent SP contents, real skill
-> implementations — those grow after the project exists. This skill produces only
-> the **registries + skeleton + placeholders**, registering up front *which roles
-> and capabilities should exist* inside `CLAUDE.md`.
+> **Not generated:** business code, real sub-agent SP contents, real capability-skill
+> implementations, the `doctor`/memory CLI itself — those grow after the project
+> exists. This skill produces only the **document system + lifecycle skills +
+> registries + skeletons**, registering up front *which roles and capabilities
+> should exist* inside `ROLES.md` and `STRUCTURE.json`.
 
 ---
 
@@ -168,23 +203,20 @@ The project folder has a fixed shape from birth:
 
 Complete the interview before generating. **Ask in rounds; offer multiple-choice
 options wherever possible** to minimize the user's typing. After each round, echo
-the answer back to confirm, then proceed. The goal: fill every `{{placeholder}}`
-in the templates.
+the answer back to confirm. The goal: fill every `{{placeholder}}` in the templates.
 
 > **Efficiency rules for the interviewer:**
-> - The CEO model, the five/six core rules, and the four-layer architecture are
->   **constants** across all projects — do *not* interview for them; they come
->   pre-filled from the template.
-> - For global capabilities, **auto-survey the host environment first** (inspect
->   the available skills / sub-agent types / MCP servers your runtime exposes) and
->   **propose** a reuse list for the user to confirm or trim — do not ask the user
->   to recall them from memory.
-> - Batch related questions (up to ~4 at a time). Aim to finish in 3–4 rounds, not 7.
+> - The CEO model, the nine philosophies, the four-layer architecture, the document
+>   system, and the session lifecycle are **constants** across all projects — do
+>   *not* interview for them; they come pre-filled from the templates.
+> - For global capabilities, **auto-survey the host environment first** (inspect the
+>   available skills / sub-agent types / MCP servers your runtime exposes) and
+>   **propose** a reuse list for the user to confirm or trim — do not ask the user to
+>   recall them from memory.
+> - Batch related questions (up to ~4 at a time). Aim to finish in 4–5 rounds.
 
-### Round 0 · Project archetype (selects the pipeline template branch)
-Ask which archetype the project is; each preloads a different spine draft:
-
-| Archetype | Typical spine (preloaded draft, then tune with the user) |
+### Round 0 · Project archetype (selects the pipeline spine draft)
+| Archetype | Typical spine (preloaded draft, then tune) |
 |---|---|
 | **Content — video/channel** | topic → script → render → publish → engage/comments → reflect |
 | **Content — ebook/publishing** | thesis → write → compile → multi-channel distribute → marketing → optimize → reflect |
@@ -193,102 +225,101 @@ Ask which archetype the project is; each preloads a different spine draft:
 | **Casual game** | concept → asset production (heavy batch concurrency) → build → test → publish → data-tune → reflect |
 | **Other (custom)** | co-design the step-by-step from scratch |
 
-### Round 1 · Mission, North Star, and red lines
-- One-sentence mission (becomes the CEO's North Star).
-- 3–5 **priority-ordered** non-negotiable constraints (earlier always outranks
-  later). Guide the user to think through the chain (e.g. "account safety >
-  content quality > quantity > speed > per-unit revenue").
-- The **#1 iron law / compliance red line**, if any ("violate it and everything
-  is wasted" — e.g. platform anti-spam, marketplace anti-AI-slop, ToS).
-- **Don'ts (two tiers):** what is *Forbidden* (red-line actions that can void the
-  whole project) vs *Discouraged* (avoid unless justified). These populate the
-  template's **Don'ts** section, parallel to the Rules.
+### Round 1 · Mission, North Star, red lines → CONSTITUTION.md + IDENTITY.md
+- One-sentence mission (becomes the CEO's North Star, lands in both IDENTITY.md and CONSTITUTION.md).
+- 3–5 **priority-ordered** non-negotiable constraints (earlier always outranks later;
+  e.g. "account safety > content quality > quantity > speed > per-unit revenue").
+- The **#1 iron law / compliance red line**, if any.
+- **Don'ts (two tiers):** *Forbidden* (red-line, can void the project) vs *Discouraged*
+  (avoid unless justified). These populate CONSTITUTION.md's Don'ts section.
 
-### Round 2 · Brand (→ configuration.json)
-- Brand/codename? Attribution entity (real name? pen name? company)? Per-language?
-- Slogan / tagline?
-- Logo assets (any existing)?
+### Round 2 · Identity & soul → IDENTITY.md + SOUL.md
+- What is the agent's **name / codename**? Does it have a persona the user wants it to inhabit?
+- **Voice & tone:** how should it talk — to the user, and (if it produces public content) to the audience?
+- **Values & temperament:** 3–5 character traits / things it cares about (e.g. "craft over speed, honest about failure, allergic to slop"). Seed SOUL.md lightly — it grows itself later.
+- Relationship to the user: chairman/CEO? co-founder? Set the working dynamic.
+
+### Round 3 · Brand → configuration.json (+ IDENTITY.md pointer)
+- Brand/codename, attribution entity (real name? pen name? company?), per-language?
+- Slogan / tagline; logo assets (any existing)?
 - **Design language:** primary colors, fonts, tone keywords, visual style, taboos.
-- Trust / E-E-A-T anchor (site / author identity)?
-- Payment / account entity (if monetized)?
+- Trust / E-E-A-T anchor; payment / account entity (if monetized)?
 
-### Round 3 · Pipeline spine (step by step)
-- Starting from the archetype draft, nail down **each step**: what it does → its
-  output → the lead role.
-- Mark **which steps can run in parallel** (the fan-out points).
-- Confirm the last step = reflection & self-iteration.
+### Round 4 · Pipeline spine + roles → WORKFLOW.md + ROLES.md + STRUCTURE.json
+- From the archetype draft, nail down **each step**: what it does → its output → the lead role.
+- Mark **which steps run in parallel** (the fan-out points).
+- Confirm the last step = `/finalize-session` (reflection & self-iteration).
+- One sub-agent per fixed step: name + one-line role + which step + which skills it mainly uses.
+- There must always be a **`dev-maintainer`** (owns all code/SP/skill changes).
+- Apply the anti-proliferation rule (one shared maintainer unless distinct dependencies).
+- Confirm the auto-surveyed **global reuse list**; list the **local** skills to build/fork
+  — and for each, which MCP servers + CLI commands it is built from.
 
-### Round 4 · Roles (sub-agent split) + global/local capabilities
-- One sub-agent per fixed step: name + one-line role + which step.
-- There must always be a `dev-maintainer` (owns all code/SP/skill changes).
-- Apply the anti-proliferation rule: prefer one shared maintainer unless an
-  artifact has distinct dependencies.
-- Confirm the auto-surveyed **global reuse list**; list the **local** skills to
-  build/fork — and for each local skill, which MCP servers + which CLI commands it
-  is built from (Philosophy 3, layer ③).
-- For each sub-agent, name which skills it should mainly use (the pointer in its SP).
-
-### Round 5 · Lifeline memory + single-source docs + phase/credentials
-- What **long-term memory store** does the project need (asset portfolio DB /
-  dedup vector store / progress ledger…)? What fields?
-- Which rules are "single source of truth" and should each become a
-  `documentation/<topic>.md`? (compliance, topic SOP, quality gate, pricing,
-  ramp-up discipline…) Register each.
+### Round 5 · Memory + single-source docs + phase/credentials → MEMORY.md + playbooks/ + INITIALIZATION.md
+- **Memory:** what long-term store does the project need? Offer the **optional vector DB**
+  (ChromaDB + OpenRouter embeddings) with a memory CLI + skill — recommend it; default it
+  to *scaffolded but off* until the user supplies an OpenRouter key. `MEMORY.md` always
+  exists as the lightweight always-loaded fact/decision set + the pointer to the vector DB.
+- Which rules are single-source-of-truth → one `documentation/playbooks/<topic>.md` each
+  (compliance, topic SOP, quality gate, pricing, ramp-up…). Register each.
 - Current phase? Ramp-up cadence / risk discipline?
-- Which private credentials / external accounts must the user provide
-  (→ INITIALIZATION.md)?
-- The boundary for "only two reasons to stop and ask the user" (missing
-  credential / subjective business judgment).
+- Which private credentials / external accounts must the user provide → `INITIALIZATION.md`.
+- The boundary for "only two reasons to stop and ask the user" (missing credential /
+  subjective business judgment).
 
-> When the interview is done, **echo back every filled key field** and confirm
-> before writing any files.
+> When the interview is done, **echo back every filled key field** and confirm before
+> writing any files.
 
 ---
 
 ## D. Generation rules
 
-1. Copy `templates/CLAUDE.md.template`, replace every `{{…}}`, delete optional
-   sections that don't apply. Keep it lean — **anything longer than a few lines
-   becomes "one line + a pointer to `documentation/<x>.md`."**
-2. Copy `templates/configuration.json.template`; put **all concrete brand values
-   (pricing / colors / attribution) only here** — the constitution references
-   them by pointer.
-3. Generate `documentation/INITIALIZATION.md` (credentials + one-time deploy) and
-   one `documentation/<topic>.md` per single-source rule identified in Round 5.
-4. Create the empty skeletons (`.claude/agents/`, `.claude/skills/`,
-   `reflections/`, `reports/`, `HANDOFF.md`) with placeholders.
-5. Recommend (do not implement) a `doctor` / consistency-lint subcommand for the
-   project's future CLI, per Philosophy 7.
+1. **`CLAUDE.md`** from `templates/CLAUDE.md.template`: keep it *thin* — the
+   bootstrap instruction + the pointer map only. **No rule, no detail** lives here;
+   everything is one line + a pointer into `documentation/`.
+2. **Each named doc** in `documentation/` from its `templates/documentation/*.template`.
+   Replace every `{{…}}`; delete optional blocks that don't apply. Keep each doc a
+   single source of truth — no cross-doc duplication; link with pointers.
+3. **`configuration.json`** from its template: **all concrete brand values
+   (pricing/colors/attribution) live only here**; IDENTITY.md references by pointer.
+4. **`STRUCTURE.json`** from its template: list every doc, agent, skill, and CLI
+   subcommand the project *claims to have*. This is what `doctor` validates.
+5. **The four lifecycle skills** from `templates/skills/*.template` into
+   `.claude/skills/`. These are project-local skills (mind the scope trap).
+6. **Skeletons:** `.claude/agents/`, `reflections/`, `reports/`,
+   `documentation/playbooks/` with placeholders.
+7. **Recommend (do not implement)** the project CLI's `doctor` subcommand and, if the
+   user opted in, the memory CLI (`memory add/query`) backed by ChromaDB + OpenRouter.
+8. Seed `NEXT_SESSION.md` with a "Phase 0 — first build" plan, and `CHANGELOG.md` with
+   the genesis entry, so `/start-session` has something real to read on day one.
 
 ---
 
 ## E. After generation (the skill's closing actions)
 
 1. **Self-check** against the checklist in §F.
-2. Output a **manifest** to the user (what files were created + one line each), and
-   restate the key decisions.
-3. If your runtime hot-loads agents/skills, tell the user how to **reload** so the
-   new `.claude/agents` / `.claude/skills` are picked up.
-4. Point to the **next step:** the project CEO takes over → dispatches the
-   maintainer agent to build out the registered local skills / sub-agents / CLI one
-   by one.
+2. Output a **manifest** to the user (files created + one line each); restate key decisions.
+3. If your runtime hot-loads agents/skills, tell the user how to **reload** so the new
+   `.claude/skills/` lifecycle skills are picked up.
+4. Point to the **next step:** run `/start-session`, then the CEO dispatches the
+   `dev-maintainer` to build out the registered local skills / sub-agents / CLI one by one.
 
 ---
 
 ## F. Quality self-check (must pass before delivery)
 
-- [ ] `CLAUDE.md` contains **no rule longer than a few lines** — everything has sunk
-      into `documentation/` or a sub-agent SP, leaving only pointers.
-- [ ] All eight design philosophies are embodied (CEO model / all-sub-agent +
-      concurrency / four-layer / single-source pointers / global-local tiers /
-      reflection close with both loops / constitution-as-code self-check / standard shape).
-- [ ] The pipeline's last step = reflection & self-iteration.
-- [ ] The constitution has a **Rules** section *and* a parallel **Don'ts** section
-      (Forbidden vs Discouraged clearly separated).
-- [ ] Each sub-agent names the skills it should mainly use; concurrency is captured
-      at the fan-out points.
-- [ ] Each local skill states which MCP / CLI it is built from.
-- [ ] Concrete brand values live only in `configuration.json`; the constitution is pointers.
-- [ ] A `doctor` / consistency-lint command is recommended for the project CLI.
-- [ ] The file map matches the directory actually generated.
+- [ ] `CLAUDE.md` is a **thin router** — bootstrap instruction + pointer map only, no rule longer than one line.
+- [ ] All **nine** philosophies are embodied (CEO / all-sub-agent + concurrency / four-layer /
+      document-system / global-local / session-lifecycle reflection with both loops /
+      constitution-as-code / standard shape / identity + soul).
+- [ ] The named document set exists in full under `documentation/`, each a single source of truth.
+- [ ] `CONSTITUTION.md` has a **Rules** section *and* a parallel **Don'ts** section (Forbidden vs Discouraged).
+- [ ] `IDENTITY.md` and `SOUL.md` are seeded; `/finalize-session` is wired to grow `SOUL.md`.
+- [ ] `WORKFLOW.md`'s last step = `/finalize-session`; fan-out (parallelism) points are marked.
+- [ ] `ROLES.md` rosters every sub-agent (incl. `dev-maintainer`), naming the skills each mainly uses; global/local split stated.
+- [ ] `NEXT_SESSION.md` carries a real Phase-0 plan; the rewrite-whole-each-finalize rule is stated in it.
+- [ ] `CHANGELOG.md` states the re-condense-each-finalize rule and has a genesis entry.
+- [ ] `STRUCTURE.json` matches what was generated; a `doctor` command is recommended to validate it.
+- [ ] The four lifecycle skills exist in `.claude/skills/`; the boot set vs on-demand split is encoded in `/start-session`.
+- [ ] Concrete brand values live only in `configuration.json`; everything else is pointers.
 - [ ] Every `{{placeholder}}` has been replaced.

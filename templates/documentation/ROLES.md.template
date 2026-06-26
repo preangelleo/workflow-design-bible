@@ -1,0 +1,42 @@
+# ROLES — {{PROJECT_NAME}} sub-agent roster
+
+> The human-readable roster of every role on the team + the global/local capability
+> split. This doc **indexes** the sub-agents; the *full* system prompt of each lives
+> in `.claude/agents/<name>.md` (loaded by the runtime when dispatched, not pasted
+> here). `doctor` checks that this roster and `.claude/agents/` agree. Loaded once
+> per session (boot set).
+
+## 👥 Sub-agent registry (local — built/forked for this project)
+| subagent_type | role (one line) | step | mainly uses (skill pointers) |
+|---|---|---|---|
+| `{{name}}` | {{role}} | {{①}} | {{skill X, skill Y}} |
+| `{{name}}` | {{role}} | {{②}} | {{…}} |
+| `dev-maintainer` | dev & maintenance: ALL code / SP / skill / template changes | as needed | the local CLI; `self-reflection*` |
+
+> **Dispatch:** `Agent(subagent_type="<name>", prompt="project context + self-contained task brief")`.
+> Send independent agents in **one message** to run them in parallel (Philosophy 2).
+> **All outbound communication to the user funnels through the CEO** — sub-agents never message the user directly.
+> **Anti-proliferation:** prefer one shared maintainer/role over one-per-artifact; split a role out only when an artifact has genuinely distinct dependencies.
+
+## 🧰 Capability layers (each role narrows what it should use)
+> A role can *see* a large pile of skills, but **seeing ≠ should-use**. Each SP must
+> explicitly narrow ("your work mainly uses skill X / Y") so it doesn't grab tools at random.
+
+### Local skills (built/forked here)
+| skill | capability | built from (MCP / CLI) |
+|---|---|---|
+| `{{skill}}` | {{capability}} | {{MCP server X + `{{core}} <cmd>`}} |
+
+### Global skills / agents / MCP (reused — call directly, zero build cost)
+{{your environment's shared capabilities — e.g. a messaging skill · an image generator ·
+a research helper · operator agents. List the ones this project will actually reuse.}}
+
+> ⚠️ **Scope trap:** a skill scoped to *another* project's directory will not auto-load
+> here. Fork a trimmed local copy or call the global equivalent. The four lifecycle
+> skills (`start-session` / `finalize-session` / `self-reflection` / `self-reflection-cli`)
+> are project-local — they load only when launched from this project directory.
+
+## 🔄 After changing the roster
+Adding/removing a role means: update this table **and** the `.claude/agents/` file
+**and** `STRUCTURE.json`, then ask the user to reload so the runtime hot-loads it.
+`{{core}} doctor` fails if these three drift apart.

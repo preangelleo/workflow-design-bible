@@ -1,0 +1,30 @@
+---
+name: self-reflection
+description: Deep periodic audit of the WHOLE {{PROJECT_NAME}} workflow architecture — CEO orchestration, sub-agent roles, skill assignments, the CLI/MCP layer, credentials & sensitive-info handling, the document system, and loop closure — producing a prioritized REFINE & UPGRADE plan that waits for the chairman's approval before execution. Use periodically (not every session) or when friction recurs. Triggers - "self reflection", "/self-reflection", "audit the workflow", "self-iterate", "is the architecture optimal", "what can we improve".
+---
+
+# /self-reflection — deep architecture audit (Loop A, periodic)
+
+> The big-picture体检. `/finalize-session` does the light per-session close; this is the
+> occasional deep audit of the *system itself*. It produces a plan and **waits for
+> approval** — it does not refactor on its own.
+
+## What to audit (each dimension → keep / refine / rebuild)
+
+1. **CEO orchestration** — is the main agent still only orchestrating, or has it drifted into doing manual labor that belongs in a sub-agent/CLI?
+2. **Sub-agent roles (ROLES.md)** — any role redundant, over-proliferated, or missing? Does each SP correctly narrow its skill set?
+3. **Skill assignment** — are capabilities at the right layer (Philosophy 3)? Anything done ad hoc that should be a skill?
+4. **CLI / MCP layer** — anything the LLM re-derives each time that should be a deterministic subcommand? (Hand off the detail to `/self-reflection-cli`.)
+5. **Global vs local split** — are we rebuilding something a global capability already provides? Any scope-trap surprises?
+6. **Credentials & sensitive info** — keys out of context/commits/logs? `INITIALIZATION.md` accurate? Anything risky in how secrets are handled?
+7. **Document system** — is `CLAUDE.md` still thin? Any doc bloated, duplicated, or stale? Is the boot set still the right set?
+8. **Loop closure** — are both reflection loops actually closing? Is `SOUL.md` growing healthily (not bloating)?
+
+## Output: a REFINE & UPGRADE plan
+- Group findings by dimension; for each: the issue → root cause → proposed change → effort/risk.
+- **Order by leverage** (biggest correctness/efficiency win first).
+- Present to the chairman and **wait for approval**. On approval, dispatch
+  `dev-maintainer` to execute, then run `{{core}} doctor` and update the docs.
+
+> If after an honest pass there is genuinely nothing to improve, say so plainly —
+> don't invent work. "The architecture is sound; nothing worth changing this cycle."

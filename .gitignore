@@ -8,3 +8,6 @@ Thumbs.db
 # Local experiments — keep the repo to the skill itself
 /scratch/
 /tmp/
+
+# Local-only maintainer guide (private context, never published)
+/CLAUDE.md

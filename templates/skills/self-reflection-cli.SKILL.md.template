@@ -1,0 +1,35 @@
+---
+name: self-reflection-cli
+description: Focused audit of CAPABILITY-DOWNLEVELING for {{PROJECT_NAME}} — find the deterministic execution steps the LLM still re-does from scratch each time (instead of judging) and propose freezing them into stable, reproducible CLI functions, with the decision results passed in as parameters. Produces a REFINE & UPGRADE plan awaiting approval. A focused variant of /self-reflection. Use periodically. Triggers - "self reflection cli", "/self-reflection-cli", "what can be pushed down to a function", "freeze this into a CLI", "which steps should be a script", "let the model only decide".
+---
+
+# /self-reflection-cli — execution-vs-decision audit (the downleveling pass)
+
+> A focused variant of `/self-reflection`. One question only: **what is the LLM still
+> redoing on the fly that should be a deterministic function?** The model should keep
+> the *judgment*; the *execution* should be a CLI call with the decision passed in as a
+> parameter. Produces a plan and **waits for approval**.
+
+## The four signals (screen every recurring step)
+A step is a downleveling candidate if it is:
+- **Repetitive** — happens many times, the same way.
+- **Deterministic** — given the inputs, the output is mechanical (no real judgment).
+- **Error-prone when improvised** — the LLM gets it subtly wrong when re-deriving it.
+- **Sensitive** — touches money/publishing/credentials, where a stable, tested path beats improvisation.
+
+## How to propose each candidate
+For each step that trips the signals:
+- **Decision vs execution split:** name exactly what judgment stays with the LLM, and
+  what becomes the function's body.
+- **Signature:** `{{core}} <verb> <args>` — the decision results are the parameters.
+- **Idempotent & testable:** define a dry-run mode and the success check.
+- **Replaces:** which ad-hoc prose/steps this retires from the SPs/skills.
+
+## Output: a REFINE & UPGRADE plan
+- The candidate functions, ordered by (frequency × error-cost).
+- Present to the chairman and **wait for approval**. On approval, dispatch
+  `dev-maintainer` to implement them, register them in `STRUCTURE.json`, point the
+  relevant skills/SPs at them, and run `{{core}} doctor`.
+
+> If every recurring deterministic step is already a CLI function, say so:
+> "Downleveling is done; nothing left to freeze this cycle."

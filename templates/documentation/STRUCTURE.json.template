@@ -1,0 +1,49 @@
+{
+  "$comment": "Machine-readable manifest of what this project CLAIMS to have. The CLI's `doctor` subcommand validates every entry against filesystem reality and exits non-zero on drift (Philosophy 7, constitution-as-code). Read on demand, not in the boot set.",
+  "project": "{{PROJECT_NAME}}",
+  "agent_name": "{{AGENT_NAME}}",
+  "version": "0.1.0",
+  "archetype": "{{content-video | content-ebook | seo-tool-site | web-product | casual-game | other}}",
+  "documents": [
+    "documentation/CONSTITUTION.md",
+    "documentation/INITIALIZATION.md",
+    "documentation/WORKFLOW.md",
+    "documentation/ROLES.md",
+    "documentation/IDENTITY.md",
+    "documentation/SOUL.md",
+    "documentation/MEMORY.md",
+    "documentation/NEXT_SESSION.md",
+    "documentation/CHANGELOG.md",
+    "documentation/configuration.json"
+  ],
+  "boot_set": [
+    "documentation/CONSTITUTION.md",
+    "documentation/IDENTITY.md",
+    "documentation/SOUL.md",
+    "documentation/WORKFLOW.md",
+    "documentation/ROLES.md",
+    "documentation/NEXT_SESSION.md",
+    "documentation/MEMORY.md"
+  ],
+  "agents": [
+    { "type": "{{name}}", "file": ".claude/agents/{{name}}.md", "step": "{{①}}", "status": "registered|built" },
+    { "type": "dev-maintainer", "file": ".claude/agents/dev-maintainer.md", "step": "as-needed", "status": "registered" }
+  ],
+  "skills": {
+    "lifecycle": ["start-session", "finalize-session", "self-reflection", "self-reflection-cli"],
+    "local": [
+      { "name": "{{skill}}", "built_from": ["{{MCP server}}", "{{core}} {{cmd}}"], "status": "registered|built" }
+    ],
+    "global_reused": ["{{messaging}}", "{{image-gen}}", "{{research}}"]
+  },
+  "cli": {
+    "launcher": "{{./core}}",
+    "subcommands": ["doctor", "{{memory}}", "{{key production subcommands…}}"]
+  },
+  "memory": {
+    "lightweight": "documentation/MEMORY.md",
+    "vector_db": { "enabled": false, "store": "{{./chroma/}}", "provider": "openrouter", "model": "{{model}}" }
+  },
+  "lifeline_store": "{{./<lifeline>.db}}",
+  "gitignored": ["{{./chroma/}}", "{{./<lifeline>.db}}", "{{.env}}", "build/"]
+}

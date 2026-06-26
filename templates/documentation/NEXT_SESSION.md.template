@@ -1,0 +1,30 @@
+# NEXT_SESSION — {{PROJECT_NAME}}
+
+<!--
+  ⚠️ REWRITE-WHOLE rule: `/finalize-session` DELETES this file's body and rewrites
+  it from scratch every time. Never append — no garbage accumulates here. It always
+  holds exactly three things: what just happened, where things stand, and what to do
+  next (with enough context to start cold). `/start-session` reads this FIRST.
+-->
+
+## ✅ Last session — what we did
+{{3–6 bullets: what got done, what shipped, what was decided. Concrete.}}
+
+## 📍 Current state
+- **Phase:** {{e.g. Phase 0 — first build}}
+- **Working / verified:** {{what is known-good right now}}
+- **Broken / blocked / loose ends:** {{anything left dangling + why}}
+- **Open question for the chairman (if any):** {{the one decision waiting on the user}}
+
+## 🎯 Next session — goals & cold-start context
+1. **{{the #1 concrete next action}}** — {{enough context to begin without re-investigating: file paths, the command to run, the task_id, the decision already made}}
+2. {{next action}}
+3. {{next action}}
+
+> Start here. If anything above conflicts with the code or a doc, the code/doc wins —
+> note the drift and reconcile.
+
+---
+*Genesis seed (replaced on first finalize): Phase 0. The project skeleton exists.
+Next: run `/start-session`, then dispatch `dev-maintainer` to build the first
+registered local skill / sub-agent / CLI subcommand from `STRUCTURE.json`.*

@@ -1,0 +1,33 @@
+# MEMORY — {{PROJECT_NAME}} (project-local)
+
+> The project's own long-term memory — distinct from any global/host memory. Two
+> tiers: a **lightweight always-loaded fact set** (this file, boot set) + an
+> **optional heavy vector store** queried on demand. This is *project* knowledge that
+> isn't derivable from the code or git history: settled decisions, hard-won facts,
+> "why we do it this way." Loaded once per session (boot set).
+
+## 📌 Always-loaded facts & decisions (keep this short — it rides in context all session)
+- {{key fact / settled decision 1 — one line}}
+- {{key fact / settled decision 2}}
+- …
+
+> Rule: if an item is now covered by CONSTITUTION.md / a playbook / the code, **delete
+> it from here** and point instead. This list stays lean on purpose.
+
+## 🧠 Vector memory (optional — recommended for any project with real history)
+{{ENABLE or "scaffolded but OFF until an OpenRouter key is provided"}}
+
+- **Store:** ChromaDB at `{{./chroma/}}` (gitignored).
+- **Embeddings / query model:** via OpenRouter (`OPENROUTER_API_KEY`, model `{{model}}`).
+- **CLI:** `{{core}} memory add "<text>" [--tags …]` · `{{core}} memory query "<question>" [--k N]`.
+- **Skill:** `{{memory-skill}}` — wraps the CLI so any role can record/recall without re-deriving the plumbing.
+- **When to write:** `/finalize-session` records this session's durable facts/decisions.
+- **When to read:** `/start-session` may run one `memory query` for the current task's context instead of loading the whole store.
+
+> Why a vector DB over a flat file: the project's history outgrows what fits in context.
+> Store everything; load only the few entries a given task needs. The always-loaded list
+> above is the index; the vector store is the library.
+
+## 🚫 What does NOT go here
+Code structure, past bug fixes, git history, anything in CONSTITUTION.md or a playbook —
+those are derivable or already documented. Memory holds only the non-obvious, non-derivable.

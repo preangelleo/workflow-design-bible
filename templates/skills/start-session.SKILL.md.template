@@ -1,0 +1,44 @@
+---
+name: start-session
+description: Boot a new work session for {{PROJECT_NAME}}. Force-loads the boot-set documents (especially NEXT_SESSION.md), connects memory, scans reports/, and reports where things stand + today's goal before any work begins. Use at the START of every session, or whenever you suspect the project context isn't loaded. Triggers - "start session", "/start-session", "boot up", "let's begin", "what were we doing", "pick up where we left off".
+---
+
+# /start-session — boot the work session
+
+> The reliable way to start. The thin `CLAUDE.md` router *instructs* a cold agent to
+> read the boot set, but this skill **guarantees** it and adds the status report. Run
+> it once at session start; afterward the docs are in context and you do not re-read them.
+
+## Steps
+
+1. **Confirm it's a cold start.** If the boot-set docs are already in your context
+   (you're mid-session), say so and skip to step 5 — do not re-read.
+
+2. **Force-read the boot set** (in this order):
+   1. `documentation/CONSTITUTION.md` — the laws I operate under.
+   2. `documentation/IDENTITY.md` + `documentation/SOUL.md` — who I am.
+   3. `documentation/WORKFLOW.md` — the pipeline spine + fan-out points.
+   4. `documentation/ROLES.md` — my team.
+   5. `documentation/MEMORY.md` — load the always-on facts; if the vector DB is
+      enabled, you may run one `{{core}} memory query "<current focus>"` instead of
+      loading the whole store.
+   6. `documentation/NEXT_SESSION.md` — **never skip.** This is where the last
+      session left off and what to do next.
+
+3. **Scan `reports/`** (Loop B): read any unconsumed async/analytics reports →
+   adopt or discard each → archive them so they aren't re-read next time.
+
+4. **Sanity check (optional but cheap):** run `{{core}} doctor` to confirm the docs'
+   claims still match filesystem reality before building on them.
+
+5. **Report up — a short briefing to the chairman:**
+   - *Who I am* (one line, in character).
+   - *Where we are*: current phase + what's working / blocked (from NEXT_SESSION.md).
+   - *Today's goal*: the #1 next action from NEXT_SESSION.md, restated concretely.
+   - *Any open question* waiting on the chairman.
+
+6. **Then begin** the first action — don't wait for a second prompt unless a
+   chairman decision is genuinely blocking.
+
+> If `NEXT_SESSION.md` and the code/docs disagree, the code/docs win — flag the drift
+> in your briefing and reconcile before proceeding.
