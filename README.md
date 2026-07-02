@@ -113,11 +113,12 @@ repo (or re-clone) and reload your skills. Watch releases for new versions.
 > document system loaded once per session, adds the start/finalize session lifecycle,
 > and gives the agent a growing identity/soul. New projects should generate on v2.
 >
-> **v2.1.0 sharpens the org model**: external contract partners (agents outside the
-> runtime, engaged by contract via a handoff protocol) join the roster; every role
-> declares an invocation mode; the four layers become five ("LLMs create and decide,
-> code executes" — atomic + pipeline functions as the deterministic ground floor);
-> and `STRUCTURE.json` gains a shared-capability reverse index.
+> Later minor releases refine the org and execution model — external contract
+> partners, per-role invocation modes, the five-layer "LLMs create and decide;
+> code executes" stack, the production self-healing invariant, in-flight hotfix
+> discipline, and `doctor`'s semantic guards + drift ratchet. Full history →
+> [`CHANGELOG.md`](./CHANGELOG.md). (This paragraph is rewritten, not appended to,
+> each release.)
 
 ## Contributing
 
