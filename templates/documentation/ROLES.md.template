@@ -7,16 +7,31 @@
 > per session (boot set).
 
 ## 👥 Sub-agent registry (local — built/forked for this project)
-| subagent_type | role (one line) | step | mainly uses (skill pointers) |
-|---|---|---|---|
-| `{{name}}` | {{role}} | {{①}} | {{skill X, skill Y}} |
-| `{{name}}` | {{role}} | {{②}} | {{…}} |
-| `dev-maintainer` | dev & maintenance: ALL code / SP / skill / template changes | as needed | the local CLI; `self-reflection*` |
+| subagent_type | role (one line) | step | invocation | mainly uses (skill pointers) |
+|---|---|---|---|---|
+| `{{name}}` | {{role}} | {{①}} | {{parallel-batch\|singleton}} | {{skill X, skill Y}} |
+| `{{name}}` | {{role}} | {{②}} | {{…}} | {{…}} |
+| `dev-maintainer` | dev & maintenance: ALL code / SP / skill / template changes | as needed | singleton | the local CLI; `self-reflection*` |
 
+> **Invocation modes:** `parallel-batch` = fan out N instances at once (mark the seam in
+> WORKFLOW.md); `singleton` = exists for role clarity, runs single-threaded;
+> `external-bridge` = not dispatched natively — engaged via a partner protocol (see below).
 > **Dispatch:** `Agent(subagent_type="<name>", prompt="project context + self-contained task brief")`.
 > Send independent agents in **one message** to run them in parallel (Philosophy 2).
 > **All outbound communication to the user funnels through the CEO** — sub-agents never message the user directly.
 > **Anti-proliferation:** prefer one shared maintainer/role over one-per-artifact; split a role out only when an artifact has genuinely distinct dependencies.
+
+## 🤝 External contract partners (engaged by contract, not managed by prompt)
+> Agents *outside* this runtime that own a capability our staff lacks. The CEO cannot
+> dispatch them natively: engagement = write a **contract file** (deliverables, absolute
+> paths, format, naming) → wake the partner via its protocol → await its **completion
+> report** → CEO reviews before accepting. A partner sees only what the contract states.
+
+| partner | capabilities | invocation protocol | contract & report |
+|---|---|---|---|
+| `{{partner}}` | {{what it does for us}} | {{file bridge / API / queue}} → `playbooks/partner_protocol_{{partner}}.md` | {{contract path convention → report path convention}} |
+
+> Delete this section if the project has no external partners — do not invent one.
 
 ## 🧰 Capability layers (each role narrows what it should use)
 > A role can *see* a large pile of skills, but **seeing ≠ should-use**. Each SP must
@@ -39,4 +54,5 @@ a research helper · operator agents. List the ones this project will actually r
 ## 🔄 After changing the roster
 Adding/removing a role means: update this table **and** the `.claude/agents/` file
 **and** `STRUCTURE.json`, then ask the user to reload so the runtime hot-loads it.
-`{{core}} doctor` fails if these three drift apart.
+Partners live in `STRUCTURE.json`'s `partners` array; shared CLI/function usage in
+its `cli.consumers` reverse index. `{{core}} doctor` fails if any of these drift apart.

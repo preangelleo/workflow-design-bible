@@ -30,6 +30,9 @@ e.g.  after script-ready ──┬─▶ structure
 
 - **Independent steps** that unblock together → dispatch in one message.
 - **Homogeneous batches** (N scenes / N pages) → run M concurrently, not all-or-one.
+- **External-partner steps** (`external-bridge` roles in ROLES.md) are *asynchronous*:
+  submit the contract, keep working on unblocked steps, collect the report later —
+  never block the pipeline waiting on a contractor.
 
 ## ⏸️ Gates (where the CEO must verify before moving on)
 - {{gate 1, e.g. quality gate before publish → playbooks/quality_gate.md}}

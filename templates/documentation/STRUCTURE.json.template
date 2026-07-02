@@ -26,8 +26,12 @@
     "documentation/MEMORY.md"
   ],
   "agents": [
-    { "type": "{{name}}", "file": ".claude/agents/{{name}}.md", "step": "{{①}}", "status": "registered|built" },
-    { "type": "dev-maintainer", "file": ".claude/agents/dev-maintainer.md", "step": "as-needed", "status": "registered" }
+    { "type": "{{name}}", "file": ".claude/agents/{{name}}.md", "step": "{{①}}", "invocation": "parallel-batch|singleton", "status": "registered|built" },
+    { "type": "dev-maintainer", "file": ".claude/agents/dev-maintainer.md", "step": "as-needed", "invocation": "singleton", "status": "registered" }
+  ],
+  "partners": [
+    { "$comment": "external contract partners (invocation: external-bridge) — delete if none",
+      "name": "{{partner}}", "capabilities": "{{what it does}}", "protocol": "documentation/playbooks/partner_protocol_{{partner}}.md", "status": "registered|active" }
   ],
   "skills": {
     "lifecycle": ["start-session", "finalize-session", "self-reflection", "self-reflection-cli"],
@@ -38,7 +42,11 @@
   },
   "cli": {
     "launcher": "{{./core}}",
-    "subcommands": ["doctor", "{{memory}}", "{{key production subcommands…}}"]
+    "subcommands": ["doctor", "{{memory}}", "{{key production subcommands…}}"],
+    "consumers": {
+      "$comment": "reverse index of shared capability (Philosophy 3, layers ④–⑤): which skills/agents consume each subcommand — so a change here shows its blast radius",
+      "{{cmd}}": ["skill:{{skill}}", "agent:{{name}}"]
+    }
   },
   "memory": {
     "lightweight": "documentation/MEMORY.md",

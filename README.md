@@ -39,7 +39,7 @@ This Bible bakes in the structure. The biggest win in **v2** is the
 *reload economics*: only the thin router rides in context every turn; the heavy
 knowledge sits in named docs read **once per session**. Same knowledge, a fraction
 of the token cost — and a context window that fills up far more slowly. On top of
-that: a CEO/sub-agent split, four clean capability layers, a session lifecycle that
+that: a CEO/sub-agent split, five clean capability layers, a session lifecycle that
 carries state forward, a built-in self-consistency check, and an identity/soul that
 compounds. You answer a short interview; you get a project that knows how to run,
 remember, and improve itself.
@@ -47,8 +47,8 @@ remember, and improve itself.
 ## The nine design philosophies
 
 1. **The main agent is a CEO, not a worker** — orchestrate, don't do manual labor.
-2. **Everything is a sub-agent; concurrency is the default** — fan out at the seams.
-3. **Four-layer architecture** — CEO → sub-agent prompt → skill → MCP/CLI; pointers down, details never up.
+2. **Everything is a sub-agent; concurrency is the default** — fan out at the seams; each role declares its invocation mode, and external contract partners are rostered separately from internal staff (engaged by contract, not managed by prompt).
+3. **Five-layer architecture** — CEO → sub-agent prompt → skill → MCP/CLI → deterministic functions; **LLMs create and decide, code executes**; pointers down, details never up.
 4. **The document system** — a thin `CLAUDE.md` router + named single-source docs loaded once per session, not every turn.
 5. **Global vs local capabilities** — reuse what's shared, build only what's unique.
 6. **Reflection is the last step, wrapped in a session lifecycle** — `/start-session` and `/finalize-session`, two loops.
@@ -112,6 +112,12 @@ repo (or re-clone) and reload your skills. Watch releases for new versions.
 > `CLAUDE.md`; v2 makes `CLAUDE.md` a thin router and moves the content into a named
 > document system loaded once per session, adds the start/finalize session lifecycle,
 > and gives the agent a growing identity/soul. New projects should generate on v2.
+>
+> **v2.1.0 sharpens the org model**: external contract partners (agents outside the
+> runtime, engaged by contract via a handoff protocol) join the roster; every role
+> declares an invocation mode; the four layers become five ("LLMs create and decide,
+> code executes" — atomic + pipeline functions as the deterministic ground floor);
+> and `STRUCTURE.json` gains a shared-capability reverse index.
 
 ## Contributing
 

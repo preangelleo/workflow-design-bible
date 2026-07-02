@@ -1,7 +1,7 @@
 ---
 name: workflow-design-bible
 description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) with a named document system, a session lifecycle (start → work → finalize), and a growing identity/soul — scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
-version: 2.0.0
+version: 2.1.0
 license: MIT
 ---
 
@@ -60,12 +60,37 @@ is sub-agent-shaped, it is *natively parallelizable*:
 
 Express concurrency at the **fan-out points** of the pipeline (a dedicated
 "parallelism" section of `WORKFLOW.md`), not as bookkeeping on every agent.
+Each rostered role also declares its **invocation mode** in `ROLES.md`:
+`parallel-batch` (fan out N at once), `singleton` (exists for role clarity,
+runs single-threaded), or `external-bridge` (see below).
 Caution against *over-proliferation*: prefer **one shared maintainer agent** over
 a maintainer-per-artifact — split a role out only when an artifact has genuinely
 distinct dependencies.
 
-### Philosophy 3 · Four-layer architecture (CEO → Sub-agent SP → Skill → MCP/CLI)
-Capabilities are tiered; each layer points **down**, and details **never** leak up:
+**Not everyone who works for the company is an employee.** Some capabilities live
+in **external contract partners** — agents outside this runtime (another vendor's
+coding agent, a dedicated image-generation agent, …) that the CEO cannot dispatch
+natively. Internal staff and contractors differ in every dimension that matters:
+
+| | Internal sub-agent | External contract partner |
+|---|---|---|
+| Invocation | Native dispatch, in-process | Handoff protocol (file bridge / API / queue), async |
+| Contract | System prompt + task brief | Formal written contract file (deliverables, paths, format) |
+| Trust model | Shares the project's context | Sees only what the contract states |
+| Accountability | CEO reviews output directly | Must file a completion report back |
+
+Roster partners **separately** in `ROLES.md`, and give each a written communication
+protocol under `documentation/playbooks/` (who wakes it, the contract format, where
+the report lands). Never blur the two: a contractor is engaged by contract, not
+managed by prompt.
+
+### Philosophy 3 · Five-layer architecture (CEO → Sub-agent SP → Skill → MCP/CLI → Functions)
+The creed of the whole stack: **LLMs create and decide; code executes.** A model's
+irreplaceable work is *creation* (scripts, designs, prompts) and *judgment* (quality
+gates, error recovery, the ambiguous case). Everything else — rendering, compiling,
+uploading, retrying, file management — runs as deterministic code: exact, fast,
+cheap, identical every time. The architecture's job is to push every possible gram
+of work **down** this stack; each layer points down, and details **never** leak up:
 
 ```
 ① CEO (CLAUDE.md → CONSTITUTION.md)  — assigns work, sets principles, touches no details
@@ -77,7 +102,18 @@ Capabilities are tiered; each layer points **down**, and details **never** leak 
    — how one capability is used; declares which MCP servers + CLI commands it is built from
    ↓ execute
 ④ MCP servers + command-line tools (executed, never loaded into context)
+   ↓ built from
+⑤ Atomic functions + pipeline functions — the deterministic ground floor.
+   Atomic functions do one small module exactly as coded; pipeline functions
+   compose them, so even the *sequencing* of modules is code, not improvisation.
 ```
+
+Layers ④–⑤ are shared infrastructure — the company's *hardware*: one CLI subcommand
+or function is typically consumed by several skills, and one skill by several roles
+(the reverse index lives in `STRUCTURE.json`). The moment a decision is made at a
+checkpoint, code takes over; every decision the model makes the same way repeatedly
+is a candidate for demotion into layer ⑤ (Philosophy 6 and `/self-reflection-cli`
+exist to find these).
 
 **Key discipline:** a sub-agent can *see* a large pile of global + local skills,
 but **seeing ≠ should-use**. Its system prompt must **explicitly narrow** ("your
@@ -206,7 +242,7 @@ options wherever possible** to minimize the user's typing. After each round, ech
 the answer back to confirm. The goal: fill every `{{placeholder}}` in the templates.
 
 > **Efficiency rules for the interviewer:**
-> - The CEO model, the nine philosophies, the four-layer architecture, the document
+> - The CEO model, the nine philosophies, the five-layer architecture, the document
 >   system, and the session lifecycle are **constants** across all projects — do
 >   *not* interview for them; they come pre-filled from the templates.
 > - For global capabilities, **auto-survey the host environment first** (inspect the
@@ -249,7 +285,13 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 - From the archetype draft, nail down **each step**: what it does → its output → the lead role.
 - Mark **which steps run in parallel** (the fan-out points).
 - Confirm the last step = `/finalize-session` (reflection & self-iteration).
-- One sub-agent per fixed step: name + one-line role + which step + which skills it mainly uses.
+- One sub-agent per fixed step: name + one-line role + which step + which skills it
+  mainly uses + its **invocation mode** (`parallel-batch` / `singleton` / `external-bridge`).
+- **External contract partners:** does any step need an agent *outside* this runtime
+  (another vendor's coding agent, an image-generation agent, …)? For each: name,
+  capabilities, the handoff protocol (bridge / API / queue), the contract format,
+  and where the completion report lands → rostered in `ROLES.md`, protocol registered
+  as a `playbooks/partner_protocol_<name>.md`.
 - There must always be a **`dev-maintainer`** (owns all code/SP/skill changes).
 - Apply the anti-proliferation rule (one shared maintainer unless distinct dependencies).
 - Confirm the auto-surveyed **global reuse list**; list the **local** skills to build/fork
@@ -309,14 +351,15 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 ## F. Quality self-check (must pass before delivery)
 
 - [ ] `CLAUDE.md` is a **thin router** — bootstrap instruction + pointer map only, no rule longer than one line.
-- [ ] All **nine** philosophies are embodied (CEO / all-sub-agent + concurrency / four-layer /
-      document-system / global-local / session-lifecycle reflection with both loops /
-      constitution-as-code / standard shape / identity + soul).
+- [ ] All **nine** philosophies are embodied (CEO / all-sub-agent + concurrency + partners /
+      five-layer with "LLMs decide, code executes" / document-system / global-local /
+      session-lifecycle reflection with both loops / constitution-as-code / standard
+      shape / identity + soul).
 - [ ] The named document set exists in full under `documentation/`, each a single source of truth.
 - [ ] `CONSTITUTION.md` has a **Rules** section *and* a parallel **Don'ts** section (Forbidden vs Discouraged).
 - [ ] `IDENTITY.md` and `SOUL.md` are seeded; `/finalize-session` is wired to grow `SOUL.md`.
 - [ ] `WORKFLOW.md`'s last step = `/finalize-session`; fan-out (parallelism) points are marked.
-- [ ] `ROLES.md` rosters every sub-agent (incl. `dev-maintainer`), naming the skills each mainly uses; global/local split stated.
+- [ ] `ROLES.md` rosters every sub-agent (incl. `dev-maintainer`) with its invocation mode, naming the skills each mainly uses; external contract partners (if any) rostered separately with a protocol pointer; global/local split stated.
 - [ ] `NEXT_SESSION.md` carries a real Phase-0 plan; the rewrite-whole-each-finalize rule is stated in it.
 - [ ] `CHANGELOG.md` states the re-condense-each-finalize rule and has a genesis entry.
 - [ ] `STRUCTURE.json` matches what was generated; a `doctor` command is recommended to validate it.

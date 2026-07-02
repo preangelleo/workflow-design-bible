@@ -6,6 +6,37 @@ This project follows [Semantic Versioning](https://semver.org/).
 The skill version is mirrored in three places that must stay in sync:
 `VERSION`, the `version:` field in `SKILL.md` frontmatter, and the top entry here.
 
+## [2.1.0] — 2026-07-02
+
+The org-model sharpening: internal staff vs external contractors, invocation modes,
+and the deterministic ground floor. No breaking changes to v2's document shape.
+
+### Added
+- **External contract partners (Philosophy 2)** — a new roster category for agents
+  *outside* the runtime that the CEO cannot dispatch natively (another vendor's
+  coding agent, an image-generation agent, …). Engaged by **contract, not prompt**:
+  write a contract file → wake the partner via its protocol → await a completion
+  report → CEO reviews. `ROLES.md` gains a partners section; `STRUCTURE.json` gains a
+  `partners` array; each partner registers a `playbooks/partner_protocol_<name>.md`;
+  interview Round 4 now asks for partners.
+- **Invocation modes** — every rostered role declares `parallel-batch` / `singleton` /
+  `external-bridge` (new column in `ROLES.md` + field in `STRUCTURE.json.agents`), so
+  concurrency is a stated property of the role, not an improvisation. `WORKFLOW.md`
+  fan-out section adds the rule: external-partner steps are async — never block the
+  pipeline waiting on a contractor.
+- **Layer ⑤: atomic + pipeline functions (Philosophy 3)** — the four-layer
+  architecture becomes five, with an explicit creed: **"LLMs create and decide; code
+  executes."** Atomic functions run one module exactly as coded; pipeline functions
+  compose them, so even sequencing is code. Every decision the model repeats is a
+  candidate for demotion into layer ⑤ (found by `/self-reflection-cli`).
+- **Shared-capability reverse index** — `STRUCTURE.json.cli.consumers` maps each CLI
+  subcommand to the skills/agents that consume it, so any change to shared
+  "hardware" shows its blast radius.
+
+### Changed
+- Philosophy 3 renamed "Five-layer architecture (CEO → Sub-agent SP → Skill →
+  MCP/CLI → Functions)"; README and the §F self-check updated to match.
+
 ## [2.0.0] — 2026-06-26
 
 Structural evolution: from "the constitution *is* CLAUDE.md" to "CLAUDE.md is a thin
