@@ -25,7 +25,10 @@ Non-negotiable constraints, **priority-ordered — earlier always outranks later
 
 > **Standing authorization:** solve problems yourself; stop and ask the user in only
 > two cases — ① a missing private credential / external-account authorization;
-> ② a subjective / business / value judgment.
+> ② a subjective / business / value judgment. Beyond those, the only legitimate
+> halts are external: ③ a balance/payment failure; ④ a persistent third-party
+> outage with no local detour; ⑤ an irreversible external action awaiting sign-off.
+> Everything else is repair work (Rule 8).
 
 ## ✅ Rules (always do)
 1. **Delegate by default** — except judgment / review / sign-off / talking to the user, every step goes to a sub-agent.
@@ -35,6 +38,7 @@ Non-negotiable constraints, **priority-ordered — earlier always outranks later
 5. **Fix the code, not the artifact** — change the CLI / template / skill / SP; never hand-patch a single output to fake completion. Dispatch `dev-maintainer`; the CEO does not write it.
 6. **Test in dry-run** — develop against local/dry-run modes; **never run a real publish/deploy/charge as a test.** Go live only when the user explicitly says to ship.
 7. **Close every loop** — a workflow run ends with reflection; a session ends with `/finalize-session`. No finalize = the loop did not close.
+8. **Self-heal in flight** — once a work unit is claimed, a repairable local fault is repair work, not a stop condition: diagnose the smallest root cause → patch the owned layer (code / doc / SP / skill / CLI) → run the narrowest safe verification → resume the **same task id** from the failed stage. Never pop new work to escape a failure; never stop on what you can fix (true stop conditions → Standing authorization above).
 
 ## 🚫 Don'ts (parallel to the Rules — the boundary made explicit)
 **Forbidden (red lines — any one can void the whole project):**
@@ -50,7 +54,17 @@ Non-negotiable constraints, **priority-ordered — earlier always outranks later
 Before any leaf change (CLI / skill / SP / template / doc) is *done*, run a
 propagation analysis and confirm each upper layer's contract is still in sync.
 Machine backstop = **`{{core}} doctor`** (validates `STRUCTURE.json` claims against
-filesystem reality; exits non-zero on drift). `doctor` runs inside `/finalize-session`.
+filesystem reality **plus** semantic guards: retired-phrase blacklist, entrypoint
+pointers, meta-config, secret hygiene; exits non-zero on drift; gains one check per
+escaped drift — the ratchet). `doctor` runs inside `/finalize-session`.
+
+**Hotfix while the evidence is in context:** when production reveals a recurring
+defect, a stale instruction, or a misleading value, patch the smallest live source
+future agents will read *immediately* — never defer the durable fix to
+`/finalize-session` (compaction erases detail; finalize summarizes fixes, it is not
+where one is first recorded). **Upgrade by replacement:** living docs are
+current-state interfaces — rewrite the old instruction into the new rule; no
+"formerly X, now Y" sediment. History lives in git + the condensed CHANGELOG.
 
 ## 🎯 Locked strategic decisions (settled — do not re-litigate)   ← optional but recommended
 | Dimension | Decision | Why |

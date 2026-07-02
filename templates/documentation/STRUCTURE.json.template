@@ -1,5 +1,5 @@
 {
-  "$comment": "Machine-readable manifest of what this project CLAIMS to have. The CLI's `doctor` subcommand validates every entry against filesystem reality and exits non-zero on drift (Philosophy 7, constitution-as-code). Read on demand, not in the boot set.",
+  "$comment": "Machine-readable manifest of what this project CLAIMS to have. The CLI's `doctor` subcommand validates every entry against filesystem reality and exits non-zero on drift (Philosophy 7, constitution-as-code). Beyond existence checks, doctor carries semantic guards (retired-phrase regex blacklist, entrypoint-pointer checks, meta-config validation, secret-hygiene scan) and the drift ratchet: every drift that escapes doctor adds the mechanical check that would have caught it. Read on demand, not in the boot set.",
   "project": "{{PROJECT_NAME}}",
   "agent_name": "{{AGENT_NAME}}",
   "version": "0.1.0",

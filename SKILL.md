@@ -1,7 +1,7 @@
 ---
 name: workflow-design-bible
 description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) with a named document system, a session lifecycle (start → work → finalize), and a growing identity/soul — scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
-version: 2.1.0
+version: 2.2.0
 license: MIT
 ---
 
@@ -51,6 +51,16 @@ The main agent's job is to **orchestrate, supervise, review, control the
 process, and talk to the user** — not to do the manual labor itself. Spend its
 context and reasoning on *judgment and coordination*. Every fixed, repeatable
 step is delegated to a sub-agent by default.
+
+**The self-healing invariant:** once a work unit is claimed (a queue task, a
+build, a publish batch), a repairable local fault is *repair work, not a stop
+condition*. Diagnose the smallest root cause → patch the owned layer (code /
+doc / role prompt / skill / CLI) → run the narrowest safe verification → resume
+the **same task id** from the failed stage; never pop new work to escape a
+failure. The only true stop conditions: a missing private credential, an
+external balance/payment failure, a persistent third-party outage with no local
+detour, an irreversible external action, or a subjective business judgment —
+enumerated in CONSTITUTION.md.
 
 ### Philosophy 2 · Everything is a sub-agent; concurrency is the default latent power
 **Every fixed work step is assigned to a role-clear sub-agent.** Because the work
@@ -154,6 +164,14 @@ Two reflection loops stay separate (per Philosophy 7's machinery):
   the deep periodic audits that feed it.
 - **Loop B — cross-session handoff** → `NEXT_SESSION.md` (synchronous, rewritten
   each finalize) + `reports/` (async analytics, consumed at the next start).
+- **Loop 0 — the in-flight hotfix (precedes A and B, replaced by neither):** when
+  production surfaces a recurring defect, a stale instruction, or a misleading
+  value, patch the smallest live source future agents will read (doc / role
+  prompt / skill / CLI / schema / test) **immediately, while the evidence is still
+  in context** — compaction erases detail, so finalize *summarizes* fixes; it must
+  never be where one is first recorded. And **upgrade by replacement**: living docs
+  are current-state interfaces — rewrite the old instruction into the new rule, no
+  "formerly X, now Y" sediment; history belongs to git and the condensed CHANGELOG.
 
 **No finalize = the loop did not close.** The goal is to steadily turn "still
 decided on the fly" into "now frozen into a deterministic function."
@@ -166,6 +184,19 @@ otherwise. So every project ships a deterministic **`doctor`** command that chec
 non-zero on drift**. `doctor` runs inside `/finalize-session`. Any leaf change
 (CLI/skill/SP/template) must re-confirm the upper layers' contracts before it is
 done; `doctor` enforces it mechanically.
+
+Existence checks alone miss the deadliest drift — the **semantic** kind: every file
+present, yet content still describing the previous architecture. So `doctor` also
+carries **semantic guards**: ① a regex blacklist of retired phrases, scanned across
+all docs; ② entrypoint-pointer checks ("who is the orchestration entry / each
+role's entry" declarations must equal the current architecture constants); ③
+meta-config validation (every path the project's self-description claims must exist
+on disk; key declared fields must equal current fact); ④ a secret-hygiene scan
+(common key patterns + an allowlist). Plus the **drift ratchet**: whenever a drift
+slips past `doctor` and is caught by a human, the fix must ship *together with* a
+new mechanical check that would have caught it (record the incident in the check's
+docstring). `doctor` only ever gains checks — that is how constitution-as-code
+hardens over time.
 
 ### Philosophy 8 · Standard shape (thin router + documentation/ system)
 The project folder has a fixed shape from birth (see §B for the full map). The
@@ -330,8 +361,10 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
    `.claude/skills/`. These are project-local skills (mind the scope trap).
 6. **Skeletons:** `.claude/agents/`, `reflections/`, `reports/`,
    `documentation/playbooks/` with placeholders.
-7. **Recommend (do not implement)** the project CLI's `doctor` subcommand and, if the
-   user opted in, the memory CLI (`memory add/query`) backed by ChromaDB + OpenRouter.
+7. **Recommend (do not implement)** the project CLI's `doctor` subcommand — manifest
+   validation **plus** the Philosophy-7 semantic guards and the drift-ratchet
+   discipline — and, if the user opted in, the memory CLI (`memory add/query`)
+   backed by ChromaDB + OpenRouter.
 8. Seed `NEXT_SESSION.md` with a "Phase 0 — first build" plan, and `CHANGELOG.md` with
    the genesis entry, so `/start-session` has something real to read on day one.
 
@@ -357,12 +390,13 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
       shape / identity + soul).
 - [ ] The named document set exists in full under `documentation/`, each a single source of truth.
 - [ ] `CONSTITUTION.md` has a **Rules** section *and* a parallel **Don'ts** section (Forbidden vs Discouraged).
+- [ ] `CONSTITUTION.md` states the **self-healing invariant** (claimed work self-heals; true stop conditions enumerated) and the **Loop-0 hotfix + upgrade-by-replacement** editing rules.
 - [ ] `IDENTITY.md` and `SOUL.md` are seeded; `/finalize-session` is wired to grow `SOUL.md`.
 - [ ] `WORKFLOW.md`'s last step = `/finalize-session`; fan-out (parallelism) points are marked.
 - [ ] `ROLES.md` rosters every sub-agent (incl. `dev-maintainer`) with its invocation mode, naming the skills each mainly uses; external contract partners (if any) rostered separately with a protocol pointer; global/local split stated.
 - [ ] `NEXT_SESSION.md` carries a real Phase-0 plan; the rewrite-whole-each-finalize rule is stated in it.
 - [ ] `CHANGELOG.md` states the re-condense-each-finalize rule and has a genesis entry.
-- [ ] `STRUCTURE.json` matches what was generated; a `doctor` command is recommended to validate it.
+- [ ] `STRUCTURE.json` matches what was generated; a `doctor` command is recommended to validate it (manifest + semantic guards + drift ratchet).
 - [ ] The four lifecycle skills exist in `.claude/skills/`; the boot set vs on-demand split is encoded in `/start-session`.
 - [ ] Concrete brand values live only in `configuration.json`; everything else is pointers.
 - [ ] Every `{{placeholder}}` has been replaced.

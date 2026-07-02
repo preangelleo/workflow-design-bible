@@ -6,6 +6,32 @@ This project follows [Semantic Versioning](https://semver.org/).
 The skill version is mirrored in three places that must stay in sync:
 `VERSION`, the `version:` field in `SKILL.md` frontmatter, and the top entry here.
 
+## [2.2.0] — 2026-07-02
+
+Field feedback absorbed from the deepest production instance of the Bible: three
+mechanisms that real autonomous operation grew and validated, injected into the
+existing philosophies (no new philosophy numbers, no structural change).
+
+### Added
+- **Self-healing invariant (Philosophy 1 + CONSTITUTION template)** — once a work
+  unit is claimed, a repairable local fault is repair work, not a stop condition:
+  smallest root cause → patch the owned layer → narrowest safe verification →
+  resume the same task id. True stop conditions enumerated (missing credential /
+  balance-payment failure / persistent third-party outage with no detour /
+  irreversible external action / subjective judgment). New Rule 8 + extended
+  standing authorization in `CONSTITUTION.md.template`.
+- **Loop 0 — in-flight hotfix + upgrade-by-replacement (Philosophy 6 +
+  CONSTITUTION template)** — patch the smallest live source future agents will
+  read while the evidence is still in context; finalize summarizes fixes, it is
+  never where one is first recorded. Living docs are current-state interfaces:
+  rewrite old instructions, no "formerly X, now Y" sediment.
+- **Semantic guards + drift ratchet (Philosophy 7 + STRUCTURE.json template +
+  generation rule 7)** — `doctor` grows beyond existence checks: retired-phrase
+  regex blacklist, entrypoint-pointer checks, meta-config validation,
+  secret-hygiene scan; and every drift that escapes `doctor` must add the
+  mechanical check that would have caught it. `doctor` only ever gains checks.
+- §F self-check gains matching lines for all three.
+
 ## [2.1.0] — 2026-07-02
 
 The org-model sharpening: internal staff vs external contractors, invocation modes,
