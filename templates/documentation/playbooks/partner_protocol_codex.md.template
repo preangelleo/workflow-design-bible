@@ -1,0 +1,83 @@
+# Partner protocol — {{PARTNER_HARNESS}} (co-chair second harness)
+
+> **Optional reference.** Include this playbook only if the owner runs **two agent
+> harnesses on the same project** (e.g. this harness *plus* a second vendor's coding
+> agent) and wants them to operate as **co-chairmen**. Delete the whole file otherwise
+> — do not invent a partner you don't have.
+>
+> **This is a protocol, not code.** The Bible ships no transport. The file bridge,
+> the wake command, and the report readers described here are **implemented by this
+> project's `dev-maintainer` at build time** — this document is only the *contract*
+> both sides honor. Register it in `ROLES.md`'s external-partner table and in
+> `STRUCTURE.json`'s `partners` array.
+
+## Why a second harness is a *partner*, not a *sub-agent*
+
+The standing CEO of this project runs in **one** harness. A second harness cannot be
+dispatched natively (`Agent(...)` does not cross the harness boundary), so it is an
+**external contract partner** (Philosophy 2): engaged by a written contract, woken over
+a bridge, and it files a completion report the CEO reviews before accepting.
+
+Use a co-chair partner only for a **real capability gap** — a model, a bundled
+generator, or a scheduler the primary harness lacks. If both harnesses can do the work
+equally, a second harness adds coordination cost for nothing; keep one CEO.
+
+| | This harness (standing CEO) | {{PARTNER_HARNESS}} (co-chair partner) |
+|---|---|---|
+| Role | Active initiator — owns the project, decides, reviews | Passive responder — does bounded, contracted work |
+| Invocation | Native sub-agent dispatch | File bridge → wake signal → async |
+| Unique capability | {{what only THIS harness can do}} | {{what only the PARTNER can do — the reason it exists}} |
+| Accountability | Reviews all output before accepting | Must file a completion report back |
+
+## The bridge (file protocol is the single source of truth)
+
+A minimal, transport-agnostic shape the `dev-maintainer` implements. Absolute paths and
+naming are the project's to fix; register them here once so both sides agree.
+
+- **Request file** — the CEO writes the contract: `{{bridge_dir}}/request.md` (+ optional
+  `request.json` for machine fields). Contains: task id, deliverables, **absolute** output
+  paths, format, naming convention, and where the report must land.
+- **Wake signal** — after writing the request, the CEO **must** actively wake the partner
+  (the file alone is not a signal). The wake mechanism is the `dev-maintainer`'s to build
+  (a CLI notify, a queue push, a new partner thread). Default to a **fresh partner thread
+  per request** — cheap, fast, and it keeps contracts isolated.
+- **Response file** — the partner writes its completion report: `{{bridge_dir}}/response.md`
+  (+ `response.json`). The CEO reads it, reviews the deliverables at the contracted paths,
+  and only then accepts.
+
+## Delegation lifecycle (CEO-initiated)
+
+1. CEO writes the **contract file** (deliverables, absolute paths, format, report path).
+2. CEO **wakes** the partner over the bridge.
+3. Partner does *only* what the contract states (it sees nothing else about the project).
+4. Partner writes the **completion report** to the contracted path.
+5. CEO reads the report, verifies the artifacts, accepts or rejects. The bridge files are
+   the state of record — never assume a step happened without reading them.
+
+## Chairman-bypass reconciliation (the reverse direction)
+
+Sometimes the **owner** talks straight to the partner harness and has it change
+code / docs / config **without routing through this project's CEO first** — a chairman
+bypass. When that happens, the bypassing harness must file a **handoff report** the
+receiving CEO can audit and reconcile:
+
+- **What changed** — files, paths, and the intent behind each edit.
+- **Why it bypassed** — the reason the CEO wasn't in the loop (usually: owner asked directly).
+- **What still needs reconciling** — version bumps, doc updates, `doctor` checks, or
+  downstream call sites the receiving CEO must now verify.
+
+The receiving CEO **intakes** the report, verifies each claim against the working tree
+(a report is a claim, not proof), folds real changes into the doc system, and records the
+reconciliation in `CHANGELOG.md`. Bypass work that never files a report is silent drift —
+the exact failure this protocol exists to prevent.
+
+## Iron rules
+
+- **File protocol is the source of truth.** Submit a request → **actively wake** the
+  partner. A written-but-unsignaled file is a dropped task.
+- **No secrets over the bridge.** Contracts carry paths and instructions, never keys.
+- **No destructive ops by contract.** A partner deletes/overwrites nothing outside the
+  explicit deliverable paths.
+- **Never fabricate bridge state** — no invented thread/response ids; read the real files.
+- **CEO reviews before accepting.** A completion report is a claim to verify, not an
+  outcome to trust.

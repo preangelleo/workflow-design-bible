@@ -6,6 +6,30 @@ This project follows [Semantic Versioning](https://semver.org/).
 The skill version is mirrored in three places that must stay in sync:
 `VERSION`, the `version:` field in `SKILL.md` frontmatter, and the top entry here.
 
+## [2.3.0] — 2026-07-04
+
+Two **optional, protocol-only** reference playbooks for owners who run more than one
+harness or more than one Bible-born project. No new philosophy, no structural change —
+they are worked instances of the existing **external contract partner** abstraction
+(Philosophy 2) and the constitution/Session-Bootstrap machinery. The Bible still ships
+**no transport code**: each template defines only the contract; the project's
+`dev-maintainer` writes the bridge/dispatch itself at build time.
+
+### Added
+- **`templates/documentation/playbooks/partner_protocol_codex.md.template`** — co-chair
+  **second-harness** protocol: why a second harness is a *partner* not a *sub-agent*,
+  the file-bridge shape (request → wake → response), the CEO-initiated delegation
+  lifecycle, and the **chairman-bypass reconciliation report** (folds in the handoff /
+  intake pattern). Gated: only seeded if the owner runs a co-chair harness.
+- **`templates/documentation/playbooks/cross_project_visiting.md.template`** —
+  **cross-project CEO visiting** protocol (a different axis: cross-project, same
+  harness): outbound (read local law → idle-check → bounded task → leave a trace →
+  return a compressed conclusion) and inbound (a visitor is bound by the host
+  constitution with *less* authority than a resident, never more). Gated on a family of
+  Bible-born projects.
+- **SKILL.md** — Round 4 offers both as optional gated references; generation rule 6
+  copies them only on opt-in. Frontmatter → 2.3.0.
+
 ## [2.2.0] — 2026-07-02
 
 Field feedback absorbed from the deepest production instance of the Bible: three

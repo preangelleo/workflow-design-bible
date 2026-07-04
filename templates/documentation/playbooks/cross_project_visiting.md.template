@@ -1,0 +1,63 @@
+# Cross-project CEO visiting protocol
+
+> **Optional reference.** Include this playbook only if the owner runs **several
+> autonomous projects that were each scaffolded with a constitution + Session
+> Bootstrap** (this project among them) and wants one project's CEO to be able to
+> drop into a *sibling* project and work **by that project's rules**. Delete the whole
+> file otherwise.
+>
+> **Different axis from a co-chair partner.** A co-chair partner
+> (`partner_protocol_*.md`) is *cross-harness, same project*. Visiting is *cross-project,
+> same harness*: the same kind of CEO parachutes into another project and obeys **its**
+> constitution. This works only because every Bible-born project exposes a thin
+> `CLAUDE.md` boot router + a named doc set — the visitor reads them and instantly knows
+> the local rules.
+>
+> **Protocol, not code.** The dispatch mechanism (a visiting sub-agent, a cross-repo
+> call) is the `dev-maintainer`'s to build; this document defines only how a visitor
+> must behave and how a host must receive one.
+
+## When to send a visiting CEO (and when not to)
+
+Send one for **bounded, obey-the-local-rules work** in another project: a cross-project
+audit after a shared-contract change, a one-off health check / doc fix, executing a
+clearly-scoped task on the sibling's behalf.
+
+**Do not** send one to look up a single fact — that's too heavy; use a read-only search
+instead. Visiting is for *doing work under a constitution*, not for *reading*.
+
+## Precondition — never parachute onto a live session
+
+Before dispatching a visitor, confirm the target project has **no active session
+running**. If a resident CEO is live there, do **not** drop in on top of it — send that
+resident CEO a prompt instead. Two CEOs editing one project at once is the collision this
+rule exists to prevent.
+
+## Outbound — how *our* CEO visits another project
+
+1. **Land and read the local law.** Open the target's `CLAUDE.md`, follow its Session
+   Bootstrap, load its full named doc set. Do not act from memory of "how projects
+   usually work."
+2. **Become a local citizen.** For the duration, behave as that project's main agent:
+   obey its constitution, red lines, and standing authorization. The visiting badge is
+   **not** a bypass — a visitor has *less* license than a resident, not more.
+3. **Do the bounded task**, and nothing beyond its scope.
+4. **Leave a trace by local convention** — `CHANGELOG.md` / `NEXT_SESSION.md` / a commit,
+   whatever that project's rules require. A visit that leaves no trace is invisible drift.
+5. **Return a compressed conclusion** to the sending session — the result, not the file
+   dumps. The parent context stays clean.
+
+## Inbound — how *this* project hosts a visiting CEO
+
+A visiting CEO from a sibling project is bound by **this** project's `CONSTITUTION.md`
+exactly as a resident is. It reads our boot set, honors our red lines and standing
+authorization, and records its work by our rules. Hosting a visitor grants **no**
+elevated permission: anything a resident could not do, a visitor cannot do either.
+
+## Iron rules
+
+- **Confirm the target is idle** before dispatching (no active resident session).
+- **Read the local `CLAUDE.md` first** — local law overrides the visitor's home habits.
+- **Bounded scope only** — do the contracted task, touch nothing else.
+- **Leave a trace by local convention**, then return a *compressed* conclusion.
+- **A visitor has less authority than a resident**, never more.

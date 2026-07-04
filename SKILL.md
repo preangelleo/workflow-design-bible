@@ -1,7 +1,7 @@
 ---
 name: workflow-design-bible
 description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) with a named document system, a session lifecycle (start → work → finalize), and a growing identity/soul — scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
-version: 2.2.0
+version: 2.3.0
 license: MIT
 ---
 
@@ -323,6 +323,14 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
   capabilities, the handoff protocol (bridge / API / queue), the contract format,
   and where the completion report lands → rostered in `ROLES.md`, protocol registered
   as a `playbooks/partner_protocol_<name>.md`.
+- **Optional multi-harness / multi-project references** (offer only if they apply; both
+  are *protocol templates*, not code — the project writes its own transport):
+  - Runs a **second harness as co-chair** on this same project (a co-chairman that owns a
+    capability gap)? Seed `playbooks/partner_protocol_codex.md` — the co-chair contract +
+    file-bridge shape + chairman-bypass reconciliation report.
+  - Part of a **family of Bible-born projects** whose CEOs should visit each other by local
+    rules? Seed `playbooks/cross_project_visiting.md` — the outbound/inbound visiting
+    protocol (read local law, idle-check, leave a trace, less authority than a resident).
 - There must always be a **`dev-maintainer`** (owns all code/SP/skill changes).
 - Apply the anti-proliferation rule (one shared maintainer unless distinct dependencies).
 - Confirm the auto-surveyed **global reuse list**; list the **local** skills to build/fork
@@ -360,7 +368,10 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 5. **The four lifecycle skills** from `templates/skills/*.template` into
    `.claude/skills/`. These are project-local skills (mind the scope trap).
 6. **Skeletons:** `.claude/agents/`, `reflections/`, `reports/`,
-   `documentation/playbooks/` with placeholders.
+   `documentation/playbooks/` with placeholders. Copy the two **optional reference
+   playbooks** (`partner_protocol_codex`, `cross_project_visiting`) from
+   `templates/documentation/playbooks/*.template` **only if** the user opted into a
+   co-chair second harness or cross-project visiting in Round 4 — otherwise omit them.
 7. **Recommend (do not implement)** the project CLI's `doctor` subcommand — manifest
    validation **plus** the Philosophy-7 semantic guards and the drift-ratchet
    discipline — and, if the user opted in, the memory CLI (`memory add/query`)
