@@ -18,6 +18,11 @@
 > `external-bridge` = not dispatched natively — engaged via a partner protocol (see below).
 > **Dispatch:** `Agent(subagent_type="<name>", prompt="project context + self-contained task brief")`.
 > Send independent agents in **one message** to run them in parallel (Philosophy 2).
+> **No skill-less roles:** every role names ≥1 skill it mainly uses; each skill declares
+> the MCP/CLI it is built from. A role with no skill pointer is an employee with no tools.
+> **No self-check, no report (Philosophy 10):** every task brief names the step's QA
+> command; the sub-agent runs `{{core}} qa <step> <task_id>` before reporting and
+> attaches the passing output. A completion report without it is invalid.
 > **All outbound communication to the user funnels through the CEO** — sub-agents never message the user directly.
 > **Anti-proliferation:** prefer one shared maintainer/role over one-per-artifact; split a role out only when an artifact has genuinely distinct dependencies.
 
@@ -31,6 +36,10 @@
 |---|---|---|---|
 | `{{partner}}` | {{what it does for us}} | {{file bridge / API / queue}} → `playbooks/partner_protocol_{{partner}}.md` | {{contract path convention → report path convention}} |
 
+> **Internal-first economics (Philosophy 2):** internal dispatches ride the runtime we
+> already pay for; external LLM API calls burn extra credits. Never outsource what an
+> internal sub-agent can do — a partner or external API is engaged only for a genuine
+> **capability gap**, never for convenience or capacity.
 > Delete this section if the project has no external partners — do not invent one.
 
 ## 🧰 Capability layers (each role narrows what it should use)

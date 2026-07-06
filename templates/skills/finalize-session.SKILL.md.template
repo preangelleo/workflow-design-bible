@@ -45,5 +45,6 @@ description: Soft-shutdown a work session for {{PROJECT_NAME}}. Reflects on the 
 8. **Commit (if the user wants):** per the project's git strategy, a clean commit of the
    docs + any code changes. {{Follow the repo's commit conventions.}}
 
-9. **Sign off** in character — a one-line "here's where I'm leaving us; next session
-   starts with {{…}}."
+9. **Report to the chairman & sign off** in character — the CEO's closing (Philosophy 1):
+   what shipped, what it cost, what broke and self-healed, what changed in the org —
+   then "here's where I'm leaving us; next session starts with {{…}}."

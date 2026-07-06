@@ -5,12 +5,16 @@
 > set). Role *detail* lives in ROLES.md + the sub-agent SPs; this doc is the spine.
 
 ## {{pipeline emoji}} The spine (step by step)
-| Step | What it does | Lead sub-agent | Output |
-|---|---|---|---|
-| ① {{intake}} | {{identify the unit of work / resolve the task id}} | `{{agent}}` | {{output}} |
-| ② {{…}} | {{…}} | `{{agent}}` | {{…}} |
-| … | | | |
-| ⑦ Reflection & finalize | Review this cycle's flaws + efficiency → attribute root causes → dispatch `dev-maintainer` to upgrade → consolidate. **Always the last step.** | CEO | `reflections/` + updated docs |
+| Step | What it does | Lead sub-agent | Executes via (function/CLI) | QA gate | Output |
+|---|---|---|---|---|---|
+| ① {{intake}} | {{identify the unit of work / resolve the task id}} | `{{agent}}` | `{{core}} {{cmd}}` | `{{core}} qa {{step}}` | {{output}} |
+| ② {{…}} | {{…}} | `{{agent}}` | {{`{{core}} {{cmd}}` or `[artisanal]`}} | {{…}} | {{…}} |
+| … | | | | | |
+| ⑥ Final QA & ship | Sweep **all** steps' outputs (counts + thresholds) → green unlocks ship → execute the outward action (package / publish / launch). **Always the CEO's hand.** | CEO | `{{core}} validate` → `{{core}} ship` | `validate` **is** the gate | the shipped product |
+| ⑦ Reflection & finalize | Review this cycle's flaws + efficiency → attribute root causes → dispatch `dev-maintainer` to upgrade → consolidate → **report to the chairman** (shipped / cost / healed / org changes). **Always the last step.** | CEO | — (judgment) | — | `reflections/` + updated docs + the chairman report |
+
+> **`[artisanal]` = industrialization debt** (Philosophy 3): the model still improvises
+> this step's execution. Allowed at birth; tracked here and retired via `/self-reflection-cli`.
 
 > **The baton between steps is a handle, not a payload.** Pass `task_id` + the
 > smallest index needed (`build_dir`, `scene_index`, `prompt_id`, …); let the
@@ -33,6 +37,19 @@ e.g.  after script-ready ──┬─▶ structure
 - **External-partner steps** (`external-bridge` roles in ROLES.md) are *asynchronous*:
   submit the contract, keep working on unblocked steps, collect the report later —
   never block the pipeline waiting on a contractor.
+
+## ✅ The QA chain (Philosophy 10 — quality is a function, not an opinion)
+- **Worker self-check — "no self-check, no report":** every sub-agent runs its
+  step's QA command (`{{core}} qa <step> <task_id>`) *before* reporting done, and
+  attaches the passing output to its report. A report without it is invalid.
+- **CEO final QA:** before ship, the CEO runs `{{core}} validate <task_id>` — one
+  deterministic sweep of all outputs. Green unlocks `{{core}} ship`.
+- **Red = repair work:** a failing check self-heals (Rule 8): fix → resume the same
+  task id → re-check. Never lower a gate to pass it — loosening a threshold is an
+  org-level change the CEO must decide explicitly and record.
+- **Subjective residue** (taste / brand fit code can't measure) → a reviewer role or
+  the CEO's spot-check, criteria in `playbooks/{{quality_gate}}.md` — the explicit
+  exception, never the default.
 
 ## ⏸️ Gates (where the CEO must verify before moving on)
 - {{gate 1, e.g. quality gate before publish → playbooks/quality_gate.md}}

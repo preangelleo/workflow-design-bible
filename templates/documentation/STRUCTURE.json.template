@@ -42,11 +42,18 @@
   },
   "cli": {
     "launcher": "{{./core}}",
-    "subcommands": ["doctor", "{{memory}}", "{{key production subcommands…}}"],
+    "subcommands": ["doctor", "qa", "validate", "ship", "{{memory}}", "{{key production subcommands…}}"],
     "consumers": {
       "$comment": "reverse index of shared capability (Philosophy 3, layers ④–⑤): which skills/agents consume each subcommand — so a change here shows its blast radius",
       "{{cmd}}": ["skill:{{skill}}", "agent:{{name}}"]
     }
+  },
+  "qa_chain": {
+    "$comment": "Philosophy 10 — quality is a deterministic gate. per_step: each spine step's QA command (workers must pass it before reporting: no self-check, no report). final_validate + ship are CEO-executed. Steps still executed artisanally (no function yet) are industrialization debt.",
+    "per_step": { "{{step}}": "{{core}} qa {{step}}" },
+    "final_validate": "{{core}} validate",
+    "ship": "{{core}} ship",
+    "artisanal_debt": ["{{steps with no executing function yet}}"]
   },
   "memory": {
     "lightweight": "documentation/MEMORY.md",

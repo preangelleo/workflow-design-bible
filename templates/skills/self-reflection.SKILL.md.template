@@ -1,11 +1,11 @@
 ---
 name: self-reflection
-description: Deep periodic audit of the WHOLE {{PROJECT_NAME}} workflow architecture — CEO orchestration, sub-agent roles, skill assignments, the CLI/MCP layer, credentials & sensitive-info handling, the document system, and loop closure — producing a prioritized REFINE & UPGRADE plan that waits for the chairman's approval before execution. Use periodically (not every session) or when friction recurs. Triggers - "self reflection", "/self-reflection", "audit the workflow", "self-iterate", "is the architecture optimal", "what can we improve".
+description: Deep periodic audit of the WHOLE {{PROJECT_NAME}} workflow architecture — CEO orchestration, sub-agent roles, skill assignments, the CLI/MCP layer, credentials & sensitive-info handling, the document system, loop closure, and the QA chain — producing a prioritized REFINE & UPGRADE plan that waits for the chairman's approval before execution. Use periodically (not every session) or when friction recurs. Triggers - "self reflection", "/self-reflection", "audit the workflow", "self-iterate", "is the architecture optimal", "what can we improve".
 ---
 
 # /self-reflection — deep architecture audit (Loop A, periodic)
 
-> The big-picture体检. `/finalize-session` does the light per-session close; this is the
+> The big-picture health check. `/finalize-session` does the light per-session close; this is the
 > occasional deep audit of the *system itself*. It produces a plan and **waits for
 > approval** — it does not refactor on its own.
 
@@ -19,6 +19,7 @@ description: Deep periodic audit of the WHOLE {{PROJECT_NAME}} workflow architec
 6. **Credentials & sensitive info** — keys out of context/commits/logs? `INITIALIZATION.md` accurate? Anything risky in how secrets are handled?
 7. **Document system** — is `CLAUDE.md` still thin? Any doc bloated, duplicated, or stale? Is the boot set still the right set?
 8. **Loop closure** — are both reflection loops actually closing? Is `SOUL.md` growing healthily (not bloating)?
+9. **The QA chain (Philosophy 10)** — does every spine step have a real QA function (not a rubber stamp)? Are self-checks actually attached to reports? Is `validate` still measuring what matters? Any `[artisanal]` industrialization debt ready to retire? Any external LLM-API spend an internal sub-agent could replace (internal-first)?
 
 ## Output: a REFINE & UPGRADE plan
 - Group findings by dimension; for each: the issue → root cause → proposed change → effort/risk.

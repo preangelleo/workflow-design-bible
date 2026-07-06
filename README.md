@@ -24,7 +24,7 @@ It encodes one architecture that has proven itself on real autonomous projects:
 > session ends by reflecting on itself and freezing "decided on the fly" into
 > "frozen into a function."
 
-— distilled into **nine design philosophies** every generated project inherits.
+— distilled into **ten design philosophies** every generated project inherits.
 
 ---
 
@@ -44,17 +44,18 @@ carries state forward, a built-in self-consistency check, and an identity/soul t
 compounds. You answer a short interview; you get a project that knows how to run,
 remember, and improve itself.
 
-## The nine design philosophies
+## The ten design philosophies
 
-1. **The main agent is a CEO, not a worker** — orchestrate, don't do manual labor.
-2. **Everything is a sub-agent; concurrency is the default** — fan out at the seams; each role declares its invocation mode, and external contract partners are rostered separately from internal staff (engaged by contract, not managed by prompt).
-3. **Five-layer architecture** — CEO → sub-agent prompt → skill → MCP/CLI → deterministic functions; **LLMs create and decide, code executes**; pointers down, details never up.
+1. **The main agent is a CEO, not a worker** — orchestrate, don't do manual labor; the CEO keeps only the org-change decisions, the final QA, the ship step, and the closing report to the chairman.
+2. **Everything is a sub-agent; concurrency is the default** — all creation and all maintenance is employee work; every role carries paired skills; fan out at the seams; internal-first — never outsource (or spend external API credits on) what an internal sub-agent can do; external contract partners are rostered separately (engaged by contract, not managed by prompt).
+3. **Five-layer architecture** — CEO → sub-agent prompt → skill → MCP/CLI → deterministic functions; **LLMs create and decide, code executes**; every pipeline step names its executing function; pointers down, details never up.
 4. **The document system** — a thin `CLAUDE.md` router + named single-source docs loaded once per session, not every turn.
 5. **Global vs local capabilities** — reuse what's shared, build only what's unique.
 6. **Reflection is the last step, wrapped in a session lifecycle** — `/start-session` and `/finalize-session`, two loops.
 7. **Constitution-as-code** — a `doctor` command keeps `STRUCTURE.json`'s claims equal to filesystem reality.
 8. **A standard project shape** — thin router + `documentation/` system from birth.
 9. **The agent has a growing identity and soul** — `IDENTITY.md` + `SOUL.md`; it becomes more itself each cycle.
+10. **Quality is a deterministic gate** — QA is functions, not opinions: no self-check, no report (workers); no final `validate`, no ship (CEO).
 
 Full detail lives in [`SKILL.md`](./SKILL.md).
 
@@ -87,7 +88,7 @@ generated, run `/start-session` in the new project to boot it.
 
 | Path | What it is |
 |---|---|
-| [`SKILL.md`](./SKILL.md) | The meta system prompt: nine philosophies + interview protocol + generation rules. The main artifact. |
+| [`SKILL.md`](./SKILL.md) | The meta system prompt: ten philosophies + interview protocol + generation rules. The main artifact. |
 | [`templates/CLAUDE.md.template`](./templates/CLAUDE.md.template) | The thin boot-router skeleton. |
 | [`templates/documentation/`](./templates/documentation) | One skeleton per named doc (CONSTITUTION, WORKFLOW, ROLES, IDENTITY, SOUL, MEMORY, NEXT_SESSION, CHANGELOG, INITIALIZATION, STRUCTURE.json). |
 | [`templates/skills/`](./templates/skills) | The four session-lifecycle skills (start-session, finalize-session, self-reflection, self-reflection-cli). |
@@ -116,9 +117,11 @@ repo (or re-clone) and reload your skills. Watch releases for new versions.
 > Later minor releases refine the org and execution model — external contract
 > partners, per-role invocation modes, the five-layer "LLMs create and decide;
 > code executes" stack, the production self-healing invariant, in-flight hotfix
-> discipline, and `doctor`'s semantic guards + drift ratchet. Full history →
-> [`CHANGELOG.md`](./CHANGELOG.md). (This paragraph is rewritten, not appended to,
-> each release.)
+> discipline, `doctor`'s semantic guards + drift ratchet, and (v2.4) the tenth
+> philosophy: a deterministic **QA chain** (worker self-checks → CEO `validate` →
+> `ship`) plus internal-first economics and per-step executing functions. Full
+> history → [`CHANGELOG.md`](./CHANGELOG.md). (This paragraph is rewritten, not
+> appended to, each release.)
 
 ## Contributing
 

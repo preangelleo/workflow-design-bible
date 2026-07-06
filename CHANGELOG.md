@@ -6,6 +6,52 @@ This project follows [Semantic Versioning](https://semver.org/).
 The skill version is mirrored in three places that must stay in sync:
 `VERSION`, the `version:` field in `SKILL.md` frontmatter, and the top entry here.
 
+## [2.4.0] — 2026-07-06
+
+**Nine philosophies become ten**, and the QA/economics layer of the company model is
+made explicit. The chairman's field feedback distilled: execution is functions, workers
+self-check before reporting, internal staff before external APIs, and the CEO is reduced
+to judgment + the closing motions. No breaking change to the document shape.
+
+### Added
+- **Philosophy 10 — Quality is a deterministic gate: no self-check, no report; no
+  final QA, no ship.** Quality control is functions (CLI/MCP), never prose or a
+  model's opinion: every sub-agent runs its step's `qa <step> <task_id>` and attaches
+  the passing output to its report (an unattached report is invalid); the CEO runs the
+  final `validate` sweep (counts + thresholds) and only a green result unlocks the
+  `ship` CLI. Red checks are self-healing repair work; lowering a gate is an explicit,
+  recorded org-level decision. Subjective residue (taste/brand fit) routes to a
+  reviewer role/spot-check with playbook criteria — the exception, never the default.
+  Lands in: `WORKFLOW.md.template` (new QA-chain section + `Final QA & ship` spine
+  step), `ROLES.md.template` (the self-check contract), `CONSTITUTION.md.template`
+  (Rule 4 rewritten from hand-verification to the QA chain), `STRUCTURE.json.template`
+  (new `qa_chain` block), `/self-reflection` (new audit dimension 9).
+- **Internal-first economics (Philosophy 2 + new Rule 9)** — never spend external
+  LLM-API credits on work an internal sub-agent can do; internal dispatches ride the
+  runtime already paid for. External models/partners are for genuine capability gaps,
+  never convenience or capacity.
+- **Per-step executing functions (Philosophy 3)** — the `WORKFLOW.md` spine gains an
+  "Executes via (function/CLI)" column: every step names its atomic/pipeline function;
+  a step with none is marked `[artisanal]` and tracked as **industrialization debt**
+  (retired via `/self-reflection-cli`, registered in `qa_chain.artisanal_debt`).
+- **CEO-reserved work made explicit (Philosophy 1)** — the CEO keeps: org-change
+  decisions (workflow/doc/skill/CLI-function/role changes — decided by the CEO,
+  executed by `dev-maintainer`), the final QA gate, the ship step, and the closing
+  report to the chairman (shipped / cost / healed / org changes). Plus the context
+  creed: handles, never payloads. `/finalize-session` step 9 becomes the chairman
+  report; interview Round 4 now also asks each step's executing function + QA gate.
+
+### Changed
+- All-sub-agent scope spelled out (Philosophy 2): *all creation* (text, images, JSON
+  artifacts) and *all maintenance* (functions, doc updates, MCP creation, scripts,
+  cron jobs, code reviews) is employee work; **no skill-less roles** — every role
+  names its paired skills, each skill declaring its MCP/CLI base.
+- README and §F self-check updated to ten philosophies.
+
+### Fixed
+- Public-purity slip: a stray Chinese word in `self-reflection.SKILL.md.template`
+  ("体检") replaced with English.
+
 ## [2.3.0] — 2026-07-04
 
 Two **optional, protocol-only** reference playbooks for owners who run more than one
