@@ -1,7 +1,7 @@
 ---
 name: workflow-design-bible
 description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) with a named document system, a session lifecycle (start → work → finalize), and a growing identity/soul — scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
-version: 2.5.0
+version: 2.6.0
 license: MIT
 ---
 
@@ -353,6 +353,8 @@ One fixed shape, every project:
 Complete the interview before generating. **Ask in rounds; offer multiple-choice
 options wherever possible** to minimize the user's typing. After each round, echo
 the answer back to confirm. The goal: fill every `{{placeholder}}` in the templates.
+(This default path is **Mode A** — a brand-new project. For an existing project,
+see **Mode B** below: survey, don't interview.)
 
 > **Efficiency rules for the interviewer:**
 > - The CEO model, the ten philosophies, the five-layer architecture, the document
@@ -377,6 +379,27 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 >   vague or contradicts an earlier one (especially mission / red lines), drop
 >   into single-question mode **on that thread** — one question at a time, each
 >   with a recommended answer, until the point is sharp — then return to batches.
+
+### Mode B — restructuring an EXISTING project (skip the interview, survey instead)
+When the target project already exists (a v1 Bible scaffold, or any project with its own
+constitution/docs), **do not interview — survey**: the answers to Rounds 0–5 already live
+in the project's docs, git history, agents, and skills. Read them first, derive every
+`{{placeholder}}`, and ask the user only about genuine gaps or judgment calls. Additional
+rules proven in practice:
+- **Name-collision rule:** if the project already has a *product/domain* constitution at
+  `documentation/CONSTITUTION.md`, rename it (e.g. `PRODUCT_CONSTITUTION.md`, `git mv` to
+  keep history, repoint every reference) and give the Bible's standard slot to the
+  *operating* constitution — one canonical name each, ambiguity gone forever. State the
+  supremacy order explicitly (domain canon outranks operating rules).
+- **Migrate, don't duplicate:** existing single-source docs (money laws, compliance,
+  phase discipline…) move under `documentation/playbooks/` via `git mv`; then sweep ALL
+  references (agents/skills/README/other runtimes) — and register the OLD paths as
+  `retired_phrases` in `STRUCTURE.json` so `doctor` blocks regressions mechanically.
+- **Retire the old handoff file** (HANDOFF.md or similar) into `NEXT_SESSION.md`,
+  absorbing its live content; condense the existing CHANGELOG into the re-condense shape
+  (detail stays in git).
+- Work on a feature branch; ship as one restructure commit + a separate CHANGELOG commit
+  (or the project's own git convention); run the upgraded `doctor` green before reporting.
 
 ### Round 0 · Project archetype (selects the pipeline spine draft)
 | Archetype | Typical spine (preloaded draft, then tune) |

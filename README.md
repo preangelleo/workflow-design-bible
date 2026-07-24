@@ -125,7 +125,9 @@ repo (or re-clone) and reload your skills. Watch releases for new versions.
 > project, frontier-round facts-vs-decisions interviewing with recommended
 > answers (downshifting to one-question grilling where an answer is vague),
 > loop-before-hypothesis debugging, a domain glossary, task-brief contracts, and
-> an out-of-scope ledger. Full history → [`CHANGELOG.md`](./CHANGELOG.md). (This
+> an out-of-scope ledger — plus (v2.6) a second invocation mode: restructuring an
+> *existing* project by surveying its own docs and history instead of
+> re-interviewing the owner. Full history → [`CHANGELOG.md`](./CHANGELOG.md). (This
 > paragraph is rewritten, not appended to, each release.)
 
 ## Contributing

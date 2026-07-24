@@ -6,6 +6,23 @@ This project follows [Semantic Versioning](https://semver.org/).
 The skill version is mirrored in three places that must stay in sync:
 `VERSION`, the `version:` field in `SKILL.md` frontmatter, and the top entry here.
 
+## [2.6.0] — 2026-07-25
+
+**Mode B: restructure an existing project — survey, don't interview.** Recovered from
+field drift: this section was written directly into an installed copy during a real
+v1→v2 project restructure and never made it back to the source until now.
+
+### Added
+- **§C Mode B** — when the target project already exists, skip the interview and
+  **survey** instead: derive every `{{placeholder}}` from the project's own docs, git
+  history, agents, and skills; ask only about genuine gaps or judgment calls. Ships
+  four battle-tested rules: the **name-collision rule** (a pre-existing domain
+  constitution is renamed via `git mv`, the Bible slot goes to the operating
+  constitution, supremacy order stated); **migrate, don't duplicate** (existing
+  single-source docs `git mv` into `playbooks/`, all references swept, old paths
+  registered as `retired_phrases` so `doctor` blocks regressions); **retire the old
+  handoff file** into `NEXT_SESSION.md`; feature-branch + green-`doctor` shipping.
+
 ## [2.5.0] — 2026-07-25
 
 **Craft distilled from the wild.** This release absorbs the essence of Matt Pocock's
