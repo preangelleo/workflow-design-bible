@@ -1,7 +1,7 @@
 ---
 name: workflow-design-bible
 description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) with a named document system, a session lifecycle (start → work → finalize), and a growing identity/soul — scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
-version: 2.4.0
+version: 2.5.0
 license: MIT
 ---
 
@@ -76,7 +76,10 @@ build, a publish batch), a repairable local fault is *repair work, not a stop
 condition*. Diagnose the smallest root cause → patch the owned layer (code /
 doc / role prompt / skill / CLI) → run the narrowest safe verification → resume
 the **same task id** from the failed stage; never pop new work to escape a
-failure. The only true stop conditions: a missing private credential, an
+failure. **Diagnosis itself is loop-first:** for a non-obvious fault, first build
+a *tight, red-capable feedback loop* — one fast, deterministic command that goes
+red on this exact fault — before theorizing about causes; the fix is verified
+when that same loop goes green. The only true stop conditions: a missing private credential, an
 external balance/payment failure, a persistent third-party outage with no local
 detour, an irreversible external action, or a subjective business judgment —
 enumerated in CONSTITUTION.md.
@@ -100,6 +103,9 @@ for convenience or capacity. State the preferred internal path in `ROLES.md`.
 Because the work is sub-agent-shaped, it is *natively parallelizable*:
 - Independent steps → fan out at once (e.g. compile / cover / copywriting in parallel).
 - Many homogeneous tasks of one kind → batch concurrency (e.g. 60 scenes, 50 in flight).
+- **Design it twice:** for a weighty design (an interface, a schema, a format),
+  fan out 2–3 sub-agents to design it *independently* from different angles, then
+  judge the alternatives side by side — concurrency spent on quality, not volume.
 
 Express concurrency at the **fan-out points** of the pipeline (a dedicated
 "parallelism" section of `WORKFLOW.md`), not as bookkeeping on every agent.
@@ -179,6 +185,19 @@ single source of truth, **loaded once per session — not re-read every turn.**
 > on *every* turn. A detail inside `WORKFLOW.md` is read once at session start and
 > then already in context for the rest of the session. Same knowledge, a fraction
 > of the cost. This is the single biggest win of v2.
+
+**The writing discipline** (how every doc, skill, and role prompt in the system is
+written — full reference: the `skill_authoring` playbook every project ships):
+- **Predictability is the root virtue** — a skill/doc exists to wrangle determinism
+  out of a stochastic system: same *process* every run.
+- **Progressive disclosure** — inline what every run needs; push what only some
+  branches reach behind a context pointer (exactly the router→docs→playbooks ladder).
+- **Leading words** — anchor a whole behaviour in one pretrained concept (*tight*
+  loop, *red/green*, *handle not payload*) instead of restating it three ways.
+- **The no-op test** — a line the model already obeys by default pays tokens to say
+  nothing; delete it. Phrase targets positively — prohibitions name the elephant.
+- **Checkable completion criteria** — every step ends on a condition the agent can
+  verify ("every X accounted for"), the cheap defence against premature completion.
 
 ### Philosophy 5 · Two-tier capability layering: global (reuse) vs local (build)
 Every project splits capabilities in two, and tells sub-agents the boundary:
@@ -292,12 +311,12 @@ One fixed shape, every project:
 │   ├── ROLES.md               sub-agent roster + contracts + global/local split (indexes .claude/agents/)
 │   ├── IDENTITY.md            who I am: name / mission / brand persona (factual, slow-changing)
 │   ├── SOUL.md                my character: values / voice / temperament (grows each finalize)
-│   ├── MEMORY.md              project-local memory + the optional vector-DB pointer & usage
+│   ├── MEMORY.md              project-local memory + the domain glossary (ubiquitous language) + the optional vector-DB pointer & usage
 │   ├── NEXT_SESSION.md        handoff: last-session summary + next-session goals (REWRITTEN whole each finalize)
 │   ├── CHANGELOG.md           condensed history (RE-COMPRESSED each finalize, stays short forever)
 │   ├── STRUCTURE.json         machine-readable manifest — doctor's single source of truth
 │   ├── configuration.json     brand structured values (colors/fonts/pricing/attribution); IDENTITY.md points here
-│   └── playbooks/             topic SOPs (quality gate / compliance / pricing / …), read on demand
+│   └── playbooks/             topic SOPs (quality gate / compliance / pricing / …) + the two standard references (skill_authoring, campaign_map), read on demand
 ├── .claude/agents/           sub-agent system prompts (the detail; ROLES.md only indexes them)
 ├── .claude/skills/           the four lifecycle skills (start-session, finalize-session, self-reflection, self-reflection-cli) + local capability skills
 ├── reflections/              per-cycle reflection notes (permanent, dated)
@@ -339,11 +358,25 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 > - The CEO model, the ten philosophies, the five-layer architecture, the document
 >   system, and the session lifecycle are **constants** across all projects — do
 >   *not* interview for them; they come pre-filled from the templates.
+> - **Facts vs decisions:** anything findable by exploring the environment (files,
+>   installed tools, the web) is *your* legwork — look it up, never ask it. Only
+>   genuine *decisions* go to the user.
 > - For global capabilities, **auto-survey the host environment first** (inspect the
 >   available skills / sub-agent types / MCP servers your runtime exposes) and
 >   **propose** a reuse list for the user to confirm or trim — do not ask the user to
 >   recall them from memory.
+> - **Every question carries your recommended answer**, marked as such — the user
+>   should be able to accept a whole round with one word.
 > - Batch related questions (up to ~4 at a time). Aim to finish in 4–5 rounds.
+> - **Frontier rounds:** the rounds below are a *default* order, not a fixed
+>   script. Each round actually asks the current **frontier** — every question
+>   whose prerequisites are already settled and which is still unanswered. When
+>   an answer settles later rounds' questions in passing, skip them; the
+>   interview converges as fast as the user's answers allow.
+> - **Downshift to grilling:** batching is the default, but when an answer is
+>   vague or contradicts an earlier one (especially mission / red lines), drop
+>   into single-question mode **on that thread** — one question at a time, each
+>   with a recommended answer, until the point is sharp — then return to batches.
 
 ### Round 0 · Project archetype (selects the pipeline spine draft)
 | Archetype | Typical spine (preloaded draft, then tune) |
@@ -409,7 +442,8 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 - **Memory:** what long-term store does the project need? Offer the **optional vector DB**
   (ChromaDB + OpenRouter embeddings) with a memory CLI + skill — recommend it; default it
   to *scaffolded but off* until the user supplies an OpenRouter key. `MEMORY.md` always
-  exists as the lightweight always-loaded fact/decision set + the pointer to the vector DB.
+  exists as the lightweight always-loaded fact/decision set + the **domain glossary**
+  (seed it with the 5–10 terms the interview already settled) + the pointer to the vector DB.
 - Which rules are single-source-of-truth → one `documentation/playbooks/<topic>.md` each
   (compliance, topic SOP, quality gate, pricing, ramp-up…). Register each.
 - Current phase? Ramp-up cadence / risk discipline?
@@ -437,10 +471,13 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 5. **The four lifecycle skills** from `templates/skills/*.template` into
    `.claude/skills/`. These are project-local skills (mind the scope trap).
 6. **Skeletons:** `.claude/agents/`, `reflections/`, `reports/`,
-   `documentation/playbooks/` with placeholders. Copy the two **optional reference
-   playbooks** (`partner_protocol_codex`, `cross_project_visiting`) from
-   `templates/documentation/playbooks/*.template` **only if** the user opted into a
-   co-chair second harness or cross-project visiting in Round 4 — otherwise omit them.
+   `documentation/playbooks/` with placeholders. **Always copy the two standard
+   reference playbooks** (`skill_authoring` — how skills/docs are written;
+   `campaign_map` — planning efforts bigger than one session) from
+   `templates/documentation/playbooks/*.template`. Copy the two **optional gated
+   playbooks** (`partner_protocol_codex`, `cross_project_visiting`) **only if** the
+   user opted into a co-chair second harness or cross-project visiting in Round 4 —
+   otherwise omit them.
 7. **Recommend (do not implement)** the project CLI's `doctor` subcommand — manifest
    validation **plus** the Philosophy-7 semantic guards and the drift-ratchet
    discipline — the **QA chain** (per-step `qa` subcommands + the CEO's final
@@ -473,6 +510,8 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 - [ ] The named document set exists in full under `documentation/`, each a single source of truth.
 - [ ] `CONSTITUTION.md` has a **Rules** section *and* a parallel **Don'ts** section (Forbidden vs Discouraged).
 - [ ] `CONSTITUTION.md` states the **self-healing invariant** (claimed work self-heals; true stop conditions enumerated) and the **Loop-0 hotfix + upgrade-by-replacement** editing rules.
+- [ ] `CONSTITUTION.md` states **facts-vs-decisions** (look up facts, ask only decisions — each question carrying a recommended answer), the **loop-before-hypothesis** debugging rule, and carries a **Ruled-out-of-scope ledger** beside the locked decisions.
+- [ ] The two standard reference playbooks (`skill_authoring`, `campaign_map`) exist under `documentation/playbooks/`.
 - [ ] `IDENTITY.md` and `SOUL.md` are seeded; `/finalize-session` is wired to grow `SOUL.md`.
 - [ ] `WORKFLOW.md`'s spine names each step's executing function/CLI (or `[artisanal]` debt) **and** its QA gate; the closing motions (CEO `validate` → CEO `ship`) precede the last step = `/finalize-session`; fan-out (parallelism) points are marked.
 - [ ] `ROLES.md` rosters every sub-agent (incl. `dev-maintainer`) with its invocation mode, naming the skills each mainly uses (no skill-less roles); external contract partners (if any) rostered separately with a protocol pointer; global/local split + the internal-first rule stated.

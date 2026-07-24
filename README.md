@@ -90,7 +90,7 @@ generated, run `/start-session` in the new project to boot it.
 |---|---|
 | [`SKILL.md`](./SKILL.md) | The meta system prompt: ten philosophies + interview protocol + generation rules. The main artifact. |
 | [`templates/CLAUDE.md.template`](./templates/CLAUDE.md.template) | The thin boot-router skeleton. |
-| [`templates/documentation/`](./templates/documentation) | One skeleton per named doc (CONSTITUTION, WORKFLOW, ROLES, IDENTITY, SOUL, MEMORY, NEXT_SESSION, CHANGELOG, INITIALIZATION, STRUCTURE.json). |
+| [`templates/documentation/`](./templates/documentation) | One skeleton per named doc (CONSTITUTION, WORKFLOW, ROLES, IDENTITY, SOUL, MEMORY, NEXT_SESSION, CHANGELOG, INITIALIZATION, STRUCTURE.json) + reference playbooks (skill authoring, campaign maps, and two optional multi-harness/multi-project protocols). |
 | [`templates/skills/`](./templates/skills) | The four session-lifecycle skills (start-session, finalize-session, self-reflection, self-reflection-cli). |
 | [`templates/configuration.json.template`](./templates/configuration.json.template) | The brand single-source-of-truth. |
 | [`CHANGELOG.md`](./CHANGELOG.md) · [`VERSION`](./VERSION) | Version history + current version. |
@@ -117,11 +117,16 @@ repo (or re-clone) and reload your skills. Watch releases for new versions.
 > Later minor releases refine the org and execution model — external contract
 > partners, per-role invocation modes, the five-layer "LLMs create and decide;
 > code executes" stack, the production self-healing invariant, in-flight hotfix
-> discipline, `doctor`'s semantic guards + drift ratchet, and (v2.4) the tenth
-> philosophy: a deterministic **QA chain** (worker self-checks → CEO `validate` →
-> `ship`) plus internal-first economics and per-step executing functions. Full
-> history → [`CHANGELOG.md`](./CHANGELOG.md). (This paragraph is rewritten, not
-> appended to, each release.)
+> discipline, `doctor`'s semantic guards + drift ratchet, the tenth philosophy's
+> deterministic **QA chain** (worker self-checks → CEO `validate` → `ship`) with
+> internal-first economics, and (v2.5) craft distilled from
+> [`mattpocock/skills`](https://github.com/mattpocock/skills): a skill-authoring
+> discipline and a multi-session **campaign map** playbook in every generated
+> project, frontier-round facts-vs-decisions interviewing with recommended
+> answers (downshifting to one-question grilling where an answer is vague),
+> loop-before-hypothesis debugging, a domain glossary, task-brief contracts, and
+> an out-of-scope ledger. Full history → [`CHANGELOG.md`](./CHANGELOG.md). (This
+> paragraph is rewritten, not appended to, each release.)
 
 ## Contributing
 

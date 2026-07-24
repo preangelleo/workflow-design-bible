@@ -1,0 +1,105 @@
+# Campaign maps — planning work bigger than one session
+
+> **Standard reference — include in every generated project.** Read when an
+> effort is too big for one session *and* wrapped in fog — the way to the
+> destination isn't visible yet. `NEXT_SESSION.md` hands off one session's state;
+> a **campaign map** charts a multi-session effort's *decisions*. Loaded on
+> demand, not in the boot set.
+> (Distilled from the "wayfinder" pattern in Matt Pocock's `mattpocock/skills`, MIT.)
+
+## The idea
+
+Don't charge at the destination — **find the way first**. A campaign map is a
+shared, low-resolution map of the effort, made of **decision tickets**: questions
+whose resolution is a *decision*, not slices of a build to execute. The map is
+done when nothing is left to decide before someone goes and does the thing.
+**Plan, don't do**: the pull to just start building is usually the signal that
+the map is finished and it's time to hand off — collapse the resolved decisions
+into a build plan of **vertical slices**: each a narrow but *complete* path
+through every layer, independently verifiable, sized to one fresh session.
+
+## Where a map lives
+
+One file per campaign: `documentation/campaigns/<slug>.md` (create the folder on
+first use; register it in `STRUCTURE.json`). If the project uses a real issue
+tracker, the map may live there instead — same shape, tracker-native blocking.
+
+## Map format
+
+```markdown
+# Campaign — <name>
+
+## Destination
+<what reaching the end looks like — a spec, a locked decision, a completed
+migration. One or two lines; every session orients to this before picking a ticket.>
+
+## Notes
+<domain context; skills/playbooks every session should consult; standing preferences>
+
+## Decisions so far        ← an INDEX, not a store: one line per resolved ticket
+- <ticket name> — <one-line gist of the answer>
+
+## Not yet specified       ← the fog of war (see below)
+<questions you can feel coming but can't phrase sharply yet>
+
+## Out of scope            ← consciously ruled out; never graduates
+- <what> — <why it's beyond the destination>
+
+## Tickets
+### [open|claimed|resolved] <ticket name>   (type: research|prototype|grilling|task)
+Question: <the decision or investigation this ticket resolves — sized to ONE session>
+Blocked by: <ticket names, if any>
+Resolution: <filled when resolved: the answer + links to assets — never pasted payloads>
+```
+
+## Ticket types — and who answers
+
+Every ticket is either **HITL** (human in the loop — resolved *with* the
+chairman) or **AFK** (the agent alone). **The agent never stands in for the
+human's side of a HITL ticket** — an agent that answers its own questions to the
+chairman has broken the protocol.
+
+- **research** (AFK) — surface a fact a decision waits on; delegate to a
+  research-capable sub-agent; several may run in parallel. Investigate against
+  **primary sources** (official docs, source code, specs) and follow every claim
+  back to the source that owns it; cite sources in the resolution.
+- **prototype** (HITL) — raise the fidelity of a discussion with a cheap, rough,
+  concrete artifact to react to; link it as an asset.
+- **grilling** (HITL) — work the question with the chairman, **one question at a
+  time, each with a recommended answer attached**. The default type.
+- **task** (HITL or AFK) — the one type that *does* rather than decides: manual
+  work that unblocks a decision (provision access, move data so its shape can be
+  seen). It earns its place by unblocking a decision, not by delivering the
+  destination.
+
+## Fog of war
+
+The map is *deliberately* incomplete — don't chart what you can't yet see.
+**Fog or ticket?** The test is whether you can state the question precisely
+*now* — not whether you can answer it now. Sharp question → ticket (even if
+blocked). Not sharp → one loose line in **Not yet specified**; don't pre-slice
+fog into ticket-sized pieces. Resolving a ticket clears fog: graduate what
+became specifiable into fresh tickets and delete it from the fog section.
+
+**Out of scope** is a different bucket: work ruled beyond the destination. It
+never graduates — it returns only if the destination is redrawn, as a fresh
+campaign. Record the *why*, so no future session re-litigates it.
+
+## Working rules
+
+1. **Claim before work.** Mark a ticket `claimed` before touching it, so
+   concurrent sessions skip it.
+2. **One decision per session** (research tickets excepted — fan those out).
+   Resolving more invites shallow answers.
+3. **Record at resolution.** The answer goes in the ticket's Resolution line;
+   the map's Decisions-so-far gains one index line. Assets are linked, never
+   pasted.
+4. **Refer by name.** In everything the chairman reads, call tickets by their
+   names, never bare ids — a wall of numbers is illegible.
+5. **Charting is one session's work.** Name the destination first (it fixes the
+   scope), map the frontier breadth-first, create the tickets you can specify,
+   wire blocking, fire the research tickets — then stop. If charting surfaces no
+   fog, you don't need a map: the effort fits one session.
+6. **Close the loop.** `/finalize-session` notes the campaign's state in
+   `NEXT_SESSION.md` (map name + next frontier ticket) so the next session cold-
+   starts onto the map.

@@ -1,0 +1,94 @@
+# Skill & doc authoring discipline
+
+> **Standard reference — include in every generated project.** Read by whoever
+> writes or edits a skill, a sub-agent system prompt, or a named doc (usually
+> `dev-maintainer`). Loaded on demand, not in the boot set.
+>
+> A skill exists to wrangle determinism out of a stochastic system. The root
+> virtue is **predictability** — the agent taking the same *process* every run,
+> not producing the same output. Every rule below serves it.
+> (Distilled from Matt Pocock's `mattpocock/skills`, MIT.)
+
+## Invocation: two kinds of skill, two kinds of cost
+
+- **Model-invoked** — carries a `description` the runtime loads **every turn**, so
+  the agent (and other skills) can fire it autonomously. Costs **context load**.
+- **User-invoked** (`disable-model-invocation: true`) — only a human typing its
+  name fires it. Zero context load, but costs **cognitive load**: the human is
+  the index that must remember it exists.
+
+Pick model-invocation only when the agent must reach the skill on its own.
+When user-invoked skills multiply past memory, add one **router skill** that
+names the others and when to reach for each — do not promote them all.
+
+## Writing the description (model-invoked only)
+
+The description does two jobs: state what the skill is, and list the **branches**
+that trigger it. Every word rides in context every turn, so prune it harder than
+the body:
+
+- **Front-load the skill's leading word** — the description is where it does its
+  invocation work.
+- **One trigger per branch.** Synonyms that rename the same branch are
+  duplication — collapse them.
+- Cut identity that is already in the body; keep triggers.
+
+## Information hierarchy & progressive disclosure
+
+Rank every piece of material by how immediately the agent needs it:
+
+1. **In-skill step** — an ordered action in the skill body. Each step ends on a
+   **completion criterion**: *checkable* (the agent can tell done from not-done)
+   and, where it matters, *exhaustive* ("every modified file accounted for", not
+   "produce a change list"). A vague criterion invites premature completion.
+2. **In-skill reference** — a rule or fact consulted on demand, inline.
+3. **External reference** — pushed into a sibling file behind a **context
+   pointer**, loaded only when the pointer fires. The pointer's *wording* decides
+   whether the agent actually reaches it.
+
+**Progressive disclosure** is the move down this ladder so the top stays legible:
+inline what every run needs; push behind a pointer what only some branches reach.
+**Co-locate**: keep a concept's definition, rules, and caveats under one heading
+rather than scattered.
+
+## Leading words
+
+A **leading word** is a compact concept already living in the model's pretraining
+that anchors a whole region of behaviour in one token (*tight* loop, *red*/green,
+*fog of war*, *handle not payload*). It pays twice: in the body it anchors
+execution (same behaviour every time the word appears); in the description it
+anchors invocation. Hunt for passages that restate one idea three ways and
+collapse them into a single strong word.
+
+## Pruning (run on every edit, not just at birth)
+
+- **Single source of truth** — one authoritative place per meaning; changing a
+  behaviour must be a one-place edit.
+- **Relevance** — does the line still bear on what the skill does?
+- **The no-op test** — sentence by sentence: does this sentence change behaviour
+  versus the model's default? A line the model already obeys ("be thorough") pays
+  load to say nothing. Delete the whole sentence; don't trim words from it.
+- **Positive phrasing beats negation** — "don't think of an elephant" names the
+  elephant. State the target behaviour so the banned one is never spoken; keep a
+  prohibition only as a hard guardrail you can't phrase positively, and pair it
+  with what to do instead.
+
+## When to split a skill
+
+Each cut spends one of the two loads, so split only when the cut earns it:
+
+- **By invocation** — a distinct leading word should trigger on its own, or
+  another skill must reach it. (Pays context load for a new description.)
+- **By sequence** — the steps still ahead tempt the agent to rush the one in
+  front of it; hiding them behind a split restores focus.
+
+## Failure modes (diagnose a misbehaving skill against these)
+
+| Mode | Symptom | Cure |
+|---|---|---|
+| **Premature completion** | a step ends before it's genuinely done | sharpen the completion criterion first; split the sequence only if the rush persists |
+| **Duplication** | same meaning in >1 place | collapse to one source of truth |
+| **Sediment** | stale layers accumulate because adding feels safe | upgrade by replacement (constitution rule) — rewrite, never append eras |
+| **Sprawl** | too long even though every line is live | disclose reference behind pointers; split by branch |
+| **No-op** | lines the model obeys by default | delete, or replace a weak leading word with a stronger one |
+| **Negation** | steering by prohibition | restate as the positive target behaviour |

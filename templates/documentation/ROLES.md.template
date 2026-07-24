@@ -18,6 +18,13 @@
 > `external-bridge` = not dispatched natively — engaged via a partner protocol (see below).
 > **Dispatch:** `Agent(subagent_type="<name>", prompt="project context + self-contained task brief")`.
 > Send independent agents in **one message** to run them in parallel (Philosophy 2).
+> **Task-brief discipline — the brief is the contract:** ① *behavioral, not
+> procedural* — state current behavior → desired behavior; the agent explores the
+> codebase fresh and makes its own implementation decisions; ② *durability over
+> precision* — no file paths or line numbers in a brief that may be read sessions
+> later (they go stale; name interfaces and concepts instead); ③ *checkable
+> acceptance criteria* — a checkbox list the agent can verify independently;
+> ④ *explicit out-of-scope* — the fence that prevents gold-plating.
 > **No skill-less roles:** every role names ≥1 skill it mainly uses; each skill declares
 > the MCP/CLI it is built from. A role with no skill pointer is an employee with no tools.
 > **No self-check, no report (Philosophy 10):** every task brief names the step's QA

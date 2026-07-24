@@ -26,8 +26,10 @@ description: Soft-shutdown a work session for {{PROJECT_NAME}}. Reflects on the 
      promote durable traits upward, trim the raw log. Quality of self, not volume.
    - **`IDENTITY.md`** — update only if something factual about scope/role/persona changed.
    - **`MEMORY.md`** — add durable non-derivable facts/decisions to the always-on list
-     (and `{{core}} memory add` to the vector DB if enabled). Delete anything now covered
-     by a doc or the code.
+     (and `{{core}} memory add` to the vector DB if enabled), and update the **domain
+     glossary** with any term this session settled or sharpened. Records are
+     decision-grade insights, not a journal — coverage is not learning; wait for
+     evidence. Delete anything now covered by a doc or the code.
 
 4. **Rewrite `NEXT_SESSION.md` WHOLE** (delete the body, write fresh — never append):
    what we did · current state · next session's concrete goals + cold-start context.

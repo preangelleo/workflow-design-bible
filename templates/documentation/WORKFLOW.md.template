@@ -49,7 +49,9 @@ e.g.  after script-ready ──┬─▶ structure
   org-level change the CEO must decide explicitly and record.
 - **Subjective residue** (taste / brand fit code can't measure) → a reviewer role or
   the CEO's spot-check, criteria in `playbooks/{{quality_gate}}.md` — the explicit
-  exception, never the default.
+  exception, never the default. When the review has **multiple axes** (e.g. quality
+  vs spec-compliance), dispatch one reviewer per axis in parallel and keep the
+  verdicts side by side — merging them lets one axis mask the other.
 
 ## ⏸️ Gates (where the CEO must verify before moving on)
 - {{gate 1, e.g. quality gate before publish → playbooks/quality_gate.md}}

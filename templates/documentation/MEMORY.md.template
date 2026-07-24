@@ -14,6 +14,16 @@
 > Rule: if an item is now covered by CONSTITUTION.md / a playbook / the code, **delete
 > it from here** and point instead. This list stays lean on purpose.
 
+## 📖 Domain glossary (ubiquitous language — one word instead of twenty)
+> The project's shared vocabulary. Every doc, prompt, and commit uses these terms
+> **exactly**; a settled term saves its paraphrase-cost in every future sentence.
+> Define what a term **is**, not what it does; keep each to 1–2 lines. Update
+> **the moment** a term is settled or sharpened — don't batch it up.
+
+- **{{Term}}** — {{tight definition}}. _Avoid:_ {{the synonyms NOT to use}}
+- **{{Term}}** — {{…}}
+- …
+
 ## 🧠 Vector memory (optional — recommended for any project with real history)
 {{ENABLE or "scaffolded but OFF until an OpenRouter key is provided"}}
 

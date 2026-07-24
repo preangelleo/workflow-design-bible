@@ -6,6 +6,60 @@ This project follows [Semantic Versioning](https://semver.org/).
 The skill version is mirrored in three places that must stay in sync:
 `VERSION`, the `version:` field in `SKILL.md` frontmatter, and the top entry here.
 
+## [2.5.0] — 2026-07-25
+
+**Craft distilled from the wild.** This release absorbs the essence of Matt Pocock's
+[`mattpocock/skills`](https://github.com/mattpocock/skills) (MIT) — a battle-tested
+library of agent-engineering disciplines — into the Bible's existing philosophies and
+templates. No new philosophy, no structural change to the document shape: every
+adoption lands as a sharpening of what was already there.
+
+### Added
+- **Two standard reference playbooks**, now copied into *every* generated project
+  (the previous two playbooks remain optional/gated):
+  - `playbooks/skill_authoring.md` — how skills/docs/role prompts are written:
+    predictability as the root virtue, model-invoked vs user-invoked (context load
+    vs cognitive load), one-trigger-per-branch descriptions, progressive disclosure,
+    leading words, the no-op test, positive phrasing over negation, checkable
+    completion criteria, and a failure-mode diagnosis table.
+  - `playbooks/campaign_map.md` — planning efforts bigger than one session:
+    destination-first decision tickets, the fog-of-war test ("can you state the
+    question precisely now"), HITL vs AFK ticket types, claim-before-work,
+    one-decision-per-session, out-of-scope that never graduates, and handoff as
+    vertical slices sized to one fresh session.
+- **CONSTITUTION template** — four sharpenings: ① *facts vs decisions* in the
+  standing authorization (look up facts, ask only decisions — every question carries
+  a recommended answer); ② new Rule 9 **loop before hypothesis** (build a tight,
+  red-capable feedback loop before theorizing; the same loop green = verified);
+  ③ a **Ruled-out-of-scope ledger** mirroring the locked decisions (rejections are
+  as binding as decisions); ④ the locked-decisions gate (a row must be hard to
+  reverse, surprising without context, and a real trade-off) + a context-hygiene
+  line (don't push on degraded context — finalize and continue fresh).
+- **MEMORY template** — a **domain glossary** section (ubiquitous language): tight
+  is-not-does definitions with `_Avoid:` alias lists, updated the moment a term
+  settles; one settled word replaces twenty every future sentence.
+- **ROLES template** — **task-brief discipline** ("the brief is the contract"):
+  behavioral not procedural; durability over precision (no file paths / line
+  numbers in briefs read sessions later); checkable acceptance criteria; explicit
+  out-of-scope against gold-plating.
+- **WORKFLOW template** — multi-axis review isolation: one reviewer per axis in
+  parallel, verdicts kept side by side (merging lets one axis mask the other).
+- **SKILL.md** — Philosophy 1 gains loop-first diagnosis; Philosophy 2 gains the
+  **design-it-twice** fan-out (2–3 agents design independently, judge side by
+  side); Philosophy 4 gains **the writing discipline** block (pointer to the
+  `skill_authoring` playbook); the interview gains the facts-vs-decisions and
+  recommended-answer-per-question rules, **frontier rounds** (the round order is a
+  default, not a script — each round asks every question whose prerequisites are
+  settled, skipping what earlier answers already settled) and a **downshift to
+  grilling** (a vague or contradictory answer switches that one thread to
+  one-question-at-a-time until sharp); Round 5 seeds the glossary.
+- **finalize-session skill** — glossary upkeep + "decision-grade insights, not a
+  journal" bar for memory growth.
+
+### Credits
+- Ideas distilled (and re-voiced for the Bible's architecture) from
+  [`mattpocock/skills`](https://github.com/mattpocock/skills), MIT © Matt Pocock.
+
 ## [2.4.0] — 2026-07-06
 
 **Nine philosophies become ten**, and the QA/economics layer of the company model is
