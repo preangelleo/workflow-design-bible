@@ -1,0 +1,126 @@
+# ARCHITECTURE — {{PROJECT_NAME}} architecture baseline
+
+> The constitution of the **code** this company writes and maintains — the CLI, the
+> skills, the product itself. Where `CONSTITUTION.md` governs how we work and
+> `WORKFLOW.md` governs what we produce, this doc governs **how the code is allowed
+> to be shaped**, and it carries that ruling *across* tasks.
+>
+> **Read on demand, not in the boot set** — loaded by whoever designs or changes
+> code (usually `dev-maintainer`), before the design, not after the bug.
+>
+> **The one doc that holds three tenses apart.** Everywhere else, living docs are
+> current-state interfaces (upgrade by replacement, no sediment). Here that rule is
+> suspended on purpose: **CURRENT** (what the code *is*, with evidence) and
+> **TARGET** (what new code *must obey*) are recorded side by side, and the
+> evidenced distance between them is the **GAP ledger**. Writing a wish into
+> CURRENT is the failure this separation exists to prevent.
+>
+> **Size it to the codebase.** A 300-line CLI deserves one screen: invariants +
+> who-owns-what. Grow a partition only when the code earns it — the full shape and
+> the bootstrap procedure for an already-drifted codebase live in
+> `documentation/playbooks/architecture_baseline.md`.
+
+## 🧱 Stack & inherited baseline
+- **Stack:** {{language / framework / runtime / key platform, with versions that matter}}
+- **Inherited horizontal baseline:** {{none — this project is standalone | `<name>` v{{X.Y}}, the versioned rule set shared by the family of projects on this stack}}
+- **Specializations** (where this project legitimately deviates from what it inherited — each one an ADR below, never a silent divergence): {{none | ADR-00N}}
+
+## ⚖️ Invariants (the short list that must never break)
+> Keep this list *short and absolute*. Everything here is mechanically checkable or
+> is on its way to becoming so (see the `doctor` guards at the bottom).
+
+1. **Dependency direction:** {{e.g. `cli → services → adapters`; adapters never import services}}
+2. **Single owner per rule/state:** every business rule and every piece of mutable state has exactly one authoritative owner (see the map below). No second writer, no second projection.
+3. **External boundaries:** every third-party SDK / API / store is reached through exactly one wrapper module — {{path}} — so it can be replaced without a sweep.
+4. **{{invariant 4, e.g. async results only take effect if still bound to the identity + lifecycle that requested them}}**
+5. **{{invariant 5}}**
+
+## 🗺️ Ownership map (rule / state → its one owner → the real symbol)
+> The most valuable table in this doc, and the first one to write. "We use a single
+> source of truth" is not a decision until it names *who holds it, who may write it,
+> what scope it lives in, and how it is invalidated.*
+
+| Rule / state | Authoritative owner | Real symbol (path::name) | Scope & lifetime | Invalidated by |
+|---|---|---|---|---|
+| {{e.g. current account identity}} | {{module/class}} | `{{path/to/file.py::Name}}` | {{process / session / request}} | {{event}} |
+| … | | | | |
+
+## 📍 CURRENT — what the code actually is (evidence required)
+> Facts only, each backed by something a future agent can re-run or re-open: a path,
+> a symbol, a command and its output, a dependency graph. **No aspiration here.**
+> Recovered at baseline creation and refreshed by write-back, never by memory.
+
+- {{fact}} — _evidence:_ `{{path or command}}`
+- {{fact}} — _evidence:_ `{{…}}`
+
+## 🎯 TARGET — what new code must obey
+> The contracts every new or touched module is held to *right now*. TARGET is not a
+> someday-architecture: if a rule here is not yet enforceable on new code, it is a
+> GAP row, not a TARGET row.
+
+- {{contract}}
+- {{contract}}
+
+## 🕳️ GAP ledger (CURRENT ≠ TARGET, with evidence)
+> One row per **atomic** gap: independently verifiable, independently closeable.
+> A gap being listed **does not authorize a refactor** — closing it is scheduled
+> work like any other (plan → `NEXT_SESSION.md` / the campaign map).
+
+| # | Current fact | Target | Evidence | Blast radius | Closes when | Status |
+|---|---|---|---|---|---|---|
+| G1 | {{…}} | {{…}} | `{{path}}` | {{modules affected}} | {{condition}} | open / in-progress / closed |
+| … | | | | | | |
+
+## 📜 ADR log (architectural decisions — recorded, not remembered)
+> The architectural twin of CONSTITUTION.md's locked-decisions table. A decision
+> earns an entry when it is **hard to reverse**, **surprising without context**, or
+> **the result of a real trade-off**. Superseding is explicit — a new ADR names the
+> one it replaces; the old entry stays, marked superseded.
+
+### ADR-001 · {{title}} — {{accepted | superseded by ADR-00N}} · {{YYYY-MM-DD}}
+- **Context:** {{what forced a decision}}
+- **Options:** {{A}} / {{B}} / {{C}}
+- **Decision:** {{what we chose}}
+- **Cost accepted:** {{what we knowingly gave up}}
+- **Scope:** {{where this binds — whole project / one module / one integration}}
+- **Verified by:** {{the check, test, or evidence that proves it holds}}
+
+## 🚧 Exceptions & debt (with expiry) — the ratchet
+> Known debt may stand. What may **never** happen: a *new* violation of the same
+> kind lands, an existing exception widens, or one fix buys another violation
+> elsewhere. Every exception carries an owner and an expiry; an expired exception
+> is a red `doctor`, not a footnote.
+
+| Exception | Why it stands | Scope (frozen) | Expires | Owner |
+|---|---|---|---|---|
+| {{…}} | {{…}} | {{files/modules — this list may only shrink}} | {{date or condition}} | {{role}} |
+
+## 🌍 Reality signals (the oracle from outside the loop)
+> Spec, code, and tests all written by the same agent proving each other consistent
+> proves nothing. At least one signal here must originate **outside** our own loop.
+
+- {{e.g. real user completion / retention / conversion}} — read via `{{command or report}}`
+- {{e.g. the third party actually accepted the request; crash / error / latency rate; the release and its rollback both really executed}}
+- Where they land: `reports/` → consumed at the next `/start-session` and reflected back into CURRENT / GAP / ADR.
+
+## ✍️ Write-back protocol (a task is not done until this is done)
+Before any code change reports "done", the agent that made it answers:
+1. Did **CURRENT** change? → record the new fact + its evidence.
+2. Did a decision get made that a future task must inherit? → new **ADR** (or supersede one).
+3. Did a **GAP** open, shrink, or close? → update the ledger.
+4. Did I bypass a boundary, duplicate a capability that already exists, or introduce a rule/state/converter with **no owner**? → fix it now, or record it as a gap with an owner.
+5. Do the docs, tests, and code still tell the same story? → reconcile.
+
+> Unanswered = **`sync_required`**, which is not a completed task. Touched a
+> decision surface this baseline doesn't cover? That is **`baseline_incomplete`**:
+> stop coding, extend the baseline, then build. (Full outcome vocabulary →
+> `playbooks/architecture_baseline.md`.)
+
+## 🩺 What `doctor` enforces from this doc
+{{List the checks already mechanized — each one starts life as a line above and
+graduates to a check. The drift ratchet applies: every architectural drift a human
+catches ships together with the check that would have caught it.}}
+- {{e.g. dependency-direction scan (no `adapters/` importing `services/`)}}
+- {{e.g. every ownership-map symbol resolves to a real path::name}}
+- {{e.g. no exception past its expiry; the exception scope list has not grown}}
+- {{e.g. violation counters for known debt never increase (the ratchet)}}

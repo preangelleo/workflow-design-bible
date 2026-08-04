@@ -11,7 +11,7 @@
 |---|---|---|---|---|
 | `{{name}}` | {{role}} | {{①}} | {{parallel-batch\|singleton}} | {{skill X, skill Y}} |
 | `{{name}}` | {{role}} | {{②}} | {{…}} | {{…}} |
-| `dev-maintainer` | dev & maintenance: ALL code / SP / skill / template changes | as needed | singleton | the local CLI; `self-reflection*` |
+| `dev-maintainer` | dev & maintenance: ALL code / SP / skill / template changes — and the **owner of `ARCHITECTURE.md`** (reads it before designing, writes it back before "done") | as needed | singleton | the local CLI; `self-reflection*` |
 
 > **Invocation modes:** `parallel-batch` = fan out N instances at once (mark the seam in
 > WORKFLOW.md); `singleton` = exists for role clarity, runs single-threaded;
@@ -30,6 +30,11 @@
 > **No self-check, no report (Philosophy 10):** every task brief names the step's QA
 > command; the sub-agent runs `{{core}} qa <step> <task_id>` before reporting and
 > attaches the passing output. A completion report without it is invalid.
+> **Code-changing briefs carry the baseline (Philosophy 11):** they name the slice of
+> `documentation/ARCHITECTURE.md` the change touches and require the write-back
+> (CURRENT / ADR / GAP) in the completion report. An uncovered decision surface is
+> reported as `baseline_incomplete` — the agent stops and escalates rather than
+> deciding architecture silently in the code.
 > **All outbound communication to the user funnels through the CEO** — sub-agents never message the user directly.
 > **Anti-proliferation:** prefer one shared maintainer/role over one-per-artifact; split a role out only when an artifact has genuinely distinct dependencies.
 

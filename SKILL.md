@@ -1,7 +1,7 @@
 ---
 name: workflow-design-bible
 description: Generate a complete "constitution + documentation system" for a new autonomous, agent-run project — a content channel, an ebook press, an SEO tool-site, a web product, a casual game, or anything that should run itself with minimal human babysitting. Use when starting a brand-new self-running project and you want a CEO-orchestrated architecture (main agent → sub-agents → skills → CLI/MCP) with a named document system, a session lifecycle (start → work → finalize), and a growing identity/soul — scaffolded from a short structured interview. Triggers - "start a new autonomous project", "scaffold a project constitution", "set up an agent-run project", "generate a CLAUDE.md / AGENTS.md for a new project", "design the workflow for X", "bootstrap a self-running pipeline".
-version: 2.6.0
+version: 2.7.0
 license: MIT
 ---
 
@@ -41,10 +41,10 @@ license: MIT
 
 ---
 
-## A. The ten non-negotiable design philosophies
+## A. The eleven non-negotiable design philosophies
 
-These ten are the soul of the Bible. Every generated project **must** embody all
-ten — they are not options, they are the foundation.
+These eleven are the soul of the Bible. Every generated project **must** embody all
+eleven — they are not options, they are the foundation.
 
 ### Philosophy 1 · The main agent is a CEO, not a worker
 The main agent's job is to **orchestrate, supervise, review, control the
@@ -79,10 +79,14 @@ the **same task id** from the failed stage; never pop new work to escape a
 failure. **Diagnosis itself is loop-first:** for a non-obvious fault, first build
 a *tight, red-capable feedback loop* — one fast, deterministic command that goes
 red on this exact fault — before theorizing about causes; the fix is verified
-when that same loop goes green. The only true stop conditions: a missing private credential, an
-external balance/payment failure, a persistent third-party outage with no local
-detour, an irreversible external action, or a subjective business judgment —
-enumerated in CONSTITUTION.md.
+when that same loop goes green. **A fault reports the layer that owns it** — repair
+routes by *type*, not by a bare red light: `baseline_incomplete` (the task touches a
+decision surface no architecture baseline covers — stop and extend it),
+`architecture_conflict`, `contract_incomplete`, `planning_stale`, `evidence_required`,
+`sync_required`, `fitness_regression` (Philosophy 11). The only true stop conditions:
+a missing private credential, an external balance/payment failure, a persistent
+third-party outage with no local detour, an irreversible external action, or a
+subjective business judgment — enumerated in CONSTITUTION.md.
 
 ### Philosophy 2 · Everything is a sub-agent; concurrency is the default latent power
 **Every fixed work step is assigned to a role-clear sub-agent.** That covers *all*
@@ -257,6 +261,13 @@ new mechanical check that would have caught it (record the incident in the check
 docstring). `doctor` only ever gains checks — that is how constitution-as-code
 hardens over time.
 
+**The ratchet is general, and it is what lets an already-messy project start
+improving today:** known debt may stand, and closing it is scheduled work — but a
+*new* violation of the same kind may not land, an existing exception may not widen,
+and one fix never buys another violation elsewhere. Stopping the divergence and
+paying off the debt are two different jobs; the first starts immediately, without
+waiting for the second.
+
 ### Philosophy 8 · Standard shape (thin router + documentation/ system)
 The project folder has a fixed shape from birth (see §B for the full map). The
 named-document set is **fixed and conventional** so every project — and every
@@ -291,9 +302,59 @@ honest — the same constitution-as-code creed, applied to output:
 - **The subjective residue:** what code genuinely cannot measure (taste, brand
   fit) is routed to a reviewer role or the CEO's spot-check, with the criteria
   written in a playbook — an explicit exception, never the default.
+- **At least one oracle from outside the loop.** Spec, code, tests, and thresholds
+  all written by the same agent proving each other consistent proves *nothing* — a
+  closed loop can only confirm itself. Every project names ≥1 signal that originates
+  outside it: real user behaviour, a third party actually accepting the request,
+  crash/error/latency rates, a release and its rollback both really executing.
+  These land in `reports/` and feed the next `/start-session`.
 
 This is what frees the CEO's context (Philosophy 1): trust lives in the QA chain,
 not in the CEO re-reading every artifact. Everything measurable is measured by code.
+
+### Philosophy 11 · The codebase has a constitution too — an architecture baseline the agent owns
+Philosophies 7 and 10 keep two things honest: the **company's structure** (`doctor`)
+and the **work products** (the QA chain). A third object is left ungoverned — **the
+code the company writes and maintains**: its CLI, its skills, its site, its game, its
+product. Ungoverned, it decays in a way no green test can see: every task passes, and
+the codebase still gets harder to change. A test judges behaviour that was already
+declared; it never judges who owns a piece of state, which way dependencies point, or
+whether this change made the *next* change more expensive. Those verdicts have no fast
+oracle — so unless something renders them, they are never rendered, and structure that
+costs nothing today wins every time.
+
+So every project keeps an **architecture baseline** — `documentation/ARCHITECTURE.md`,
+read on demand at design time (not in the boot set):
+
+- **Read before designing · obey while building · verify before shipping · write back
+  before "done".** A change that moved architectural fact without recording it is
+  `sync_required` — not a completed task. This is what carries a decision *across*
+  tasks instead of re-deciding it every session.
+- **Three tenses held apart** — the one doc where upgrade-by-replacement (Philosophy 6)
+  is suspended: **CURRENT** (what the code *is*, every row backed by a path, symbol, or
+  command output), **TARGET** (what new code *must* obey), and the **GAP ledger**
+  between them, each gap atomic and independently closeable. A wish written into
+  CURRENT is the failure this separation exists to prevent — and a listed gap
+  authorizes *planning*, never an unscheduled rewrite.
+- **`baseline_incomplete` beats improvisation.** When a task touches a decision surface
+  the baseline doesn't cover, the correct move is to stop, extend the baseline, then
+  build. The expensive architectural decisions are the ones nobody noticed they were
+  making.
+- **Decisions are recorded, not remembered** — an ADR log (context · options · decision
+  · cost · scope · what supersedes it), the architectural twin of CONSTITUTION.md's
+  locked-decisions table.
+- **Size it to the codebase.** A project whose only code is a 300-line CLI needs one
+  screen: the invariants + the ownership map (which rule/state has which single owner,
+  at which real symbol). Partitions for state, async, persistence, integration, and
+  errors are added only when the code has produced the pain they address.
+- **Inheritance, where there's a family:** projects sharing a stack lock a **version**
+  of one shared horizontal rule set and hold only the local landing here. A project may
+  specialize by ADR, never silently; a lesson learned here becomes a *candidate*,
+  promoted into the shared version only after it survives review and a second project.
+
+Full shape, the bootstrap procedure for an already-drifted codebase, the typed-outcome
+routing table, and the post-change reflection checklist →
+`playbooks/architecture_baseline.md`.
 
 ---
 
@@ -309,6 +370,7 @@ One fixed shape, every project:
 │   ├── INITIALIZATION.md      one-time setup: credential checklist + first deploy
 │   ├── WORKFLOW.md            the pipeline spine: each step + its executing function + its QA gate + the fan-out points
 │   ├── ROLES.md               sub-agent roster + contracts + global/local split (indexes .claude/agents/)
+│   ├── ARCHITECTURE.md        the code's constitution: invariants + ownership map + CURRENT / TARGET / GAP + ADR log (on demand, at design time)
 │   ├── IDENTITY.md            who I am: name / mission / brand persona (factual, slow-changing)
 │   ├── SOUL.md                my character: values / voice / temperament (grows each finalize)
 │   ├── MEMORY.md              project-local memory + the domain glossary (ubiquitous language) + the optional vector-DB pointer & usage
@@ -316,7 +378,7 @@ One fixed shape, every project:
 │   ├── CHANGELOG.md           condensed history (RE-COMPRESSED each finalize, stays short forever)
 │   ├── STRUCTURE.json         machine-readable manifest — doctor's single source of truth
 │   ├── configuration.json     brand structured values (colors/fonts/pricing/attribution); IDENTITY.md points here
-│   └── playbooks/             topic SOPs (quality gate / compliance / pricing / …) + the two standard references (skill_authoring, campaign_map), read on demand
+│   └── playbooks/             topic SOPs (quality gate / compliance / pricing / …) + the three standard references (skill_authoring, campaign_map, architecture_baseline), read on demand
 ├── .claude/agents/           sub-agent system prompts (the detail; ROLES.md only indexes them)
 ├── .claude/skills/           the four lifecycle skills (start-session, finalize-session, self-reflection, self-reflection-cli) + local capability skills
 ├── reflections/              per-cycle reflection notes (permanent, dated)
@@ -329,8 +391,9 @@ One fixed shape, every project:
 > **The boot set (force-read at `/start-session`, per the "tiered read" rule):**
 > `CONSTITUTION.md`, `IDENTITY.md`, `SOUL.md`, `WORKFLOW.md`, `ROLES.md`,
 > `NEXT_SESSION.md`, and load `MEMORY.md` (+ connect the vector DB if configured).
-> **On-demand only:** `INITIALIZATION.md`, `CHANGELOG.md`, `STRUCTURE.json`,
-> `configuration.json`, `playbooks/*`. This keeps session-start light.
+> **On-demand only:** `INITIALIZATION.md`, `ARCHITECTURE.md` (read before designing
+> or changing code), `CHANGELOG.md`, `STRUCTURE.json`, `configuration.json`,
+> `playbooks/*`. This keeps session-start light.
 
 | Deliverable | Path | Filled from |
 |---|---|---|
@@ -357,7 +420,7 @@ the answer back to confirm. The goal: fill every `{{placeholder}}` in the templa
 see **Mode B** below: survey, don't interview.)
 
 > **Efficiency rules for the interviewer:**
-> - The CEO model, the ten philosophies, the five-layer architecture, the document
+> - The CEO model, the eleven philosophies, the five-layer architecture, the document
 >   system, and the session lifecycle are **constants** across all projects — do
 >   *not* interview for them; they come pre-filled from the templates.
 > - **Facts vs decisions:** anything findable by exploring the environment (files,
@@ -395,6 +458,12 @@ rules proven in practice:
   phase discipline…) move under `documentation/playbooks/` via `git mv`; then sweep ALL
   references (agents/skills/README/other runtimes) — and register the OLD paths as
   `retired_phrases` in `STRUCTURE.json` so `doctor` blocks regressions mechanically.
+- **Recover the architecture baseline from evidence, not from the old design docs**
+  (Philosophy 11) — CURRENT comes from reading the *code*; existing design docs are
+  candidate evidence, never authority. Full ordering, plus the two traps (a wish written
+  into CURRENT; a GAP ledger read as a rewrite mandate) →
+  `playbooks/architecture_baseline.md`. Start the ratchet on day one regardless of how
+  much debt the survey turns up.
 - **Retire the old handoff file** (HANDOFF.md or similar) into `NEXT_SESSION.md`,
   absorbing its live content; condense the existing CHANGELOG into the re-condense shape
   (detail stays in git).
@@ -456,7 +525,13 @@ rules proven in practice:
   - Part of a **family of Bible-born projects** whose CEOs should visit each other by local
     rules? Seed `playbooks/cross_project_visiting.md` — the outbound/inbound visiting
     protocol (read local law, idle-check, leave a trace, less authority than a resident).
-- There must always be a **`dev-maintainer`** (owns all code/SP/skill changes).
+- **Architecture baseline (Philosophy 11)** — survey first, then *propose*: ① the stack
+  and how much code this project maintains (a small CLI → one screen of baseline; a real
+  product → the fuller shape); ② whether a **family** of projects shares that stack and
+  should inherit one versioned rule set — if so, which version this project locks; ③ the
+  **≥1 reality signal from outside the loop** (Philosophy 10) this project will trust.
+- There must always be a **`dev-maintainer`** (owns all code/SP/skill changes) — and
+  it is the role that reads and writes `ARCHITECTURE.md`.
 - Apply the anti-proliferation rule (one shared maintainer unless distinct dependencies).
 - Confirm the auto-surveyed **global reuse list**; list the **local** skills to build/fork
   — and for each, which MCP servers + CLI commands it is built from.
@@ -493,20 +568,29 @@ rules proven in practice:
    subcommand the project *claims to have*. This is what `doctor` validates.
 5. **The four lifecycle skills** from `templates/skills/*.template` into
    `.claude/skills/`. These are project-local skills (mind the scope trap).
-6. **Skeletons:** `.claude/agents/`, `reflections/`, `reports/`,
-   `documentation/playbooks/` with placeholders. **Always copy the two standard
+6. **`ARCHITECTURE.md`** from its template — **sized to the codebase**, not to the
+   template. Every project gets one (each grows its own CLI, skills, and role prompts —
+   that *is* a codebase, and `dev-maintainer` is the one drifting it), but at birth fill
+   only the stack, the invariants, and the ownership map; leave CURRENT/GAP/ADR seeded
+   and let the first real tasks grow them. For **Mode B** (an existing project), CURRENT
+   is *recovered from evidence* before anything else is written (Philosophy 11).
+7. **Skeletons:** `.claude/agents/`, `reflections/`, `reports/`,
+   `documentation/playbooks/` with placeholders. **Always copy the three standard
    reference playbooks** (`skill_authoring` — how skills/docs are written;
-   `campaign_map` — planning efforts bigger than one session) from
+   `campaign_map` — planning efforts bigger than one session; `architecture_baseline` —
+   how the code's baseline is grown, enforced, and written back) from
    `templates/documentation/playbooks/*.template`. Copy the two **optional gated
    playbooks** (`partner_protocol_codex`, `cross_project_visiting`) **only if** the
    user opted into a co-chair second harness or cross-project visiting in Round 4 —
    otherwise omit them.
-7. **Recommend (do not implement)** the project CLI's `doctor` subcommand — manifest
-   validation **plus** the Philosophy-7 semantic guards and the drift-ratchet
-   discipline — the **QA chain** (per-step `qa` subcommands + the CEO's final
-   `validate` + the `ship` command, Philosophy 10) — and, if the user opted in, the
-   memory CLI (`memory add/query`) backed by ChromaDB + OpenRouter.
-8. Seed `NEXT_SESSION.md` with a "Phase 0 — first build" plan, and `CHANGELOG.md` with
+8. **Recommend (do not implement)** the project CLI's `doctor` subcommand — manifest
+   validation **plus** the Philosophy-7 semantic guards, the generalized ratchet, and
+   the architecture checks `ARCHITECTURE.md` registers (dependency direction, ownership
+   symbols resolve, exception expiry, no-new-violation counters) — the **QA chain**
+   (per-step `qa` subcommands + the CEO's final `validate` + the `ship` command,
+   Philosophy 10) — and, if the user opted in, the memory CLI (`memory add/query`)
+   backed by ChromaDB + OpenRouter.
+9. Seed `NEXT_SESSION.md` with a "Phase 0 — first build" plan, and `CHANGELOG.md` with
    the genesis entry, so `/start-session` has something real to read on day one.
 
 ---
@@ -525,16 +609,20 @@ rules proven in practice:
 ## F. Quality self-check (must pass before delivery)
 
 - [ ] `CLAUDE.md` is a **thin router** — bootstrap instruction + pointer map only, no rule longer than one line.
-- [ ] All **ten** philosophies are embodied (CEO with reserved decisions + closing motions /
+- [ ] All **eleven** philosophies are embodied (CEO with reserved decisions + closing motions /
       all-sub-agent + concurrency + partners + internal-first economics /
       five-layer with "LLMs decide, code executes" + per-step executing functions /
       document-system / global-local / session-lifecycle reflection with both loops /
-      constitution-as-code / standard shape / identity + soul / deterministic QA chain).
+      constitution-as-code + the general ratchet / standard shape / identity + soul /
+      deterministic QA chain with an outside-the-loop oracle / architecture baseline).
 - [ ] The named document set exists in full under `documentation/`, each a single source of truth.
 - [ ] `CONSTITUTION.md` has a **Rules** section *and* a parallel **Don'ts** section (Forbidden vs Discouraged).
 - [ ] `CONSTITUTION.md` states the **self-healing invariant** (claimed work self-heals; true stop conditions enumerated) and the **Loop-0 hotfix + upgrade-by-replacement** editing rules.
 - [ ] `CONSTITUTION.md` states **facts-vs-decisions** (look up facts, ask only decisions — each question carrying a recommended answer), the **loop-before-hypothesis** debugging rule, and carries a **Ruled-out-of-scope ledger** beside the locked decisions.
-- [ ] The two standard reference playbooks (`skill_authoring`, `campaign_map`) exist under `documentation/playbooks/`.
+- [ ] The three standard reference playbooks (`skill_authoring`, `campaign_map`, `architecture_baseline`) exist under `documentation/playbooks/`.
+- [ ] `ARCHITECTURE.md` exists, sized to the codebase: stack (+ any inherited baseline version), invariants, and the ownership map are real (not placeholders); CURRENT rows carry evidence; CURRENT / TARGET / GAP are kept apart; the write-back protocol and `sync_required` / `baseline_incomplete` rules are stated. It is **on demand**, not in the boot set.
+- [ ] `CONSTITUTION.md` states the **typed-outcome** routing (a fault names its owning layer) and the **general ratchet** (no new violations, no widened exceptions, no trading one fix for another).
+- [ ] At least one **reality signal from outside the loop** is named (Philosophy 10) with where it lands.
 - [ ] `IDENTITY.md` and `SOUL.md` are seeded; `/finalize-session` is wired to grow `SOUL.md`.
 - [ ] `WORKFLOW.md`'s spine names each step's executing function/CLI (or `[artisanal]` debt) **and** its QA gate; the closing motions (CEO `validate` → CEO `ship`) precede the last step = `/finalize-session`; fan-out (parallelism) points are marked.
 - [ ] `ROLES.md` rosters every sub-agent (incl. `dev-maintainer`) with its invocation mode, naming the skills each mainly uses (no skill-less roles); external contract partners (if any) rostered separately with a protocol pointer; global/local split + the internal-first rule stated.

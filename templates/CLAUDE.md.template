@@ -21,7 +21,9 @@ These documents are **not** auto-loaded each turn — only this router is. So:
 - **Mid-session** (the boot set is already in your context) → **do not re-read.**
   You already have the context; just keep working.
 - **On demand only** (read when a task needs them, not at startup):
-  `documentation/INITIALIZATION.md`, `documentation/CHANGELOG.md`,
+  `documentation/INITIALIZATION.md`, **`documentation/ARCHITECTURE.md` — read it
+  before designing or changing any code, not after the bug**,
+  `documentation/CHANGELOG.md`,
   `documentation/STRUCTURE.json`, `documentation/configuration.json`,
   `documentation/playbooks/*`.
 - **Session end** → run **`/finalize-session`** to soft-shutdown: reflect, update
@@ -39,6 +41,7 @@ direction and sign off; I orchestrate, delegate, verify, and report.
 | `documentation/INITIALIZATION.md` | One-time setup: credential checklist + first deploy |
 | `documentation/WORKFLOW.md` | The pipeline spine, step by step + the fan-out (parallelism) points |
 | `documentation/ROLES.md` | Sub-agent roster + contracts + global/local capability split |
+| `documentation/ARCHITECTURE.md` | The code's constitution: invariants · ownership map · CURRENT/TARGET/GAP · ADRs (read **before** changing code) |
 | `documentation/IDENTITY.md` | Who I am: name · mission · brand persona (factual) |
 | `documentation/SOUL.md` | My character: values · voice · temperament (grows each finalize) |
 | `documentation/MEMORY.md` | Project-local memory + the optional vector-DB pointer & usage |

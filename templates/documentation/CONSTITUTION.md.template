@@ -39,13 +39,15 @@ Non-negotiable constraints, **priority-ordered — earlier always outranks later
 1. **Delegate by default** — except judgment / review / sign-off / talking to the user, every step goes to a sub-agent.
 2. **Parallelize over serialize** — fan out independent work at once; batch homogeneous tasks. (Fan-out points → WORKFLOW.md.)
 3. **Background over foreground** — long tasks go to the background while you push other orchestration.
-4. **No self-check, no report; no final QA, no ship** — a sub-agent's "done" is valid only with its passing `{{core}} qa <step>` output attached; before shipping, the CEO runs `{{core}} validate` across all outputs (counts + thresholds). Trust the QA chain, not re-reading; reserve hand-inspection for the subjective residue (criteria → the quality playbook). Never lower a gate to pass it — loosening a threshold is an org-level decision, made explicitly and recorded.
+4. **No self-check, no report; no final QA, no ship** — a sub-agent's "done" is valid only with its passing `{{core}} qa <step>` output attached; before shipping, the CEO runs `{{core}} validate` across all outputs (counts + thresholds). Trust the QA chain, not re-reading; reserve hand-inspection for the subjective residue (criteria → the quality playbook). Never lower a gate to pass it — loosening a threshold is an org-level decision, made explicitly and recorded. **And keep one oracle outside the loop:** spec, code, tests, and thresholds all written by us proving each other consistent proves nothing — {{the outside signal this project trusts, e.g. real user completion / the third party accepting the request / crash + latency rates}}, landing in `reports/`.
 5. **Fix the code, not the artifact** — change the CLI / template / skill / SP; never hand-patch a single output to fake completion. Dispatch `dev-maintainer`; the CEO does not write it.
 6. **Test in dry-run** — develop against local/dry-run modes; **never run a real publish/deploy/charge as a test.** Go live only when the user explicitly says to ship.
 7. **Close every loop** — a workflow run ends with reflection; a session ends with `/finalize-session`. No finalize = the loop did not close.
-8. **Self-heal in flight** — once a work unit is claimed, a repairable local fault is repair work, not a stop condition: diagnose the smallest root cause → patch the owned layer (code / doc / SP / skill / CLI) → run the narrowest safe verification → resume the **same task id** from the failed stage. Never pop new work to escape a failure; never stop on what you can fix (true stop conditions → Standing authorization above). A red QA check (Rule 4) is exactly this kind of repair work.
+8. **Self-heal in flight** — once a work unit is claimed, a repairable local fault is repair work, not a stop condition: diagnose the smallest root cause → patch the owned layer (code / doc / SP / skill / CLI) → run the narrowest safe verification → resume the **same task id** from the failed stage. Never pop new work to escape a failure; never stop on what you can fix (true stop conditions → Standing authorization above). A red QA check (Rule 4) is exactly this kind of repair work. **A fault names the layer that owns it** — route repair by type, not by a bare red light: `baseline_incomplete` (touches a decision surface `ARCHITECTURE.md` doesn't cover → extend the baseline *first*) · `architecture_conflict` (contradicts an accepted decision → new ADR or drop the plan) · `contract_incomplete` (design too vague to implement) · `planning_stale` · `evidence_required` · `sync_required` (code moved, the baseline hasn't) · `fitness_regression`. Each **blocks** the task; none is a note attached to a passing one. (Routing table → `playbooks/architecture_baseline.md`.)
 9. **Loop before hypothesis** — diagnosing a non-obvious fault starts by building a **tight, red-capable feedback loop**: one command (a test, a curl, a CLI run against a fixture) that goes **red on this exact fault** and will go green when it's fixed — fast, deterministic, agent-runnable. No red-capable command, no theorizing: reading code to build a theory before the loop exists is the failure this rule prevents. The fix is verified when the *same* loop goes green.
 10. **Internal-first** — never spend external LLM-API credits on work an internal sub-agent can do: internal dispatches ride the runtime we already pay for. External models/partners are for genuine **capability gaps** (rostered in ROLES.md), never for convenience or capacity.
+11. **Design against the baseline** — before changing code, read `documentation/ARCHITECTURE.md`: obey the invariants and the ownership map while building; verify the *structure* (not just the behaviour) before shipping; **write back before "done"** (new CURRENT fact · new/superseded ADR · a GAP opened or closed). Code is never the first place an architectural decision gets made. Unrecorded = `sync_required` = not done.
+12. **Ratchet, don't wait** — known debt may stand and is closed on a schedule, but a **new** violation of the same kind may not land, an existing exception may not widen, and one fix never buys another violation elsewhere. This applies to code, to docs, and to QA thresholds alike.
 
 ## 🚫 Don'ts (parallel to the Rules — the boundary made explicit)
 **Forbidden (red lines — any one can void the whole project):**
@@ -65,6 +67,13 @@ Machine backstop = **`{{core}} doctor`** (validates `STRUCTURE.json` claims agai
 filesystem reality **plus** semantic guards: retired-phrase blacklist, entrypoint
 pointers, meta-config, secret hygiene; exits non-zero on drift; gains one check per
 escaped drift — the ratchet). `doctor` runs inside `/finalize-session`.
+
+**The code's own constitution** is `documentation/ARCHITECTURE.md` (Rule 11): the
+invariants, the ownership map, and CURRENT / TARGET / GAP held apart — the one doc
+where upgrade-by-replacement is deliberately suspended, because current fact and
+target contract must both be visible at once. Read on demand at design time, never
+in the boot set. How to grow, enforce, and write it back →
+`playbooks/architecture_baseline.md`.
 
 **Hotfix while the evidence is in context:** when production reveals a recurring
 defect, a stale instruction, or a misleading value, patch the smallest live source

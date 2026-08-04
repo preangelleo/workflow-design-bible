@@ -10,8 +10,9 @@ itself* — and it interviews you, then scaffolds a complete, opinionated workfl
 - a **thin `CLAUDE.md` boot router** that stays resident every turn but holds almost
   nothing;
 - a **document system** under `documentation/` — a fixed set of named single-source
-  docs (`CONSTITUTION.md`, `WORKFLOW.md`, `ROLES.md`, `IDENTITY.md`, `SOUL.md`,
-  `MEMORY.md`, `NEXT_SESSION.md`, …) loaded **once per session, not every turn**;
+  docs (`CONSTITUTION.md`, `WORKFLOW.md`, `ROLES.md`, `ARCHITECTURE.md`, `IDENTITY.md`,
+  `SOUL.md`, `MEMORY.md`, `NEXT_SESSION.md`, …) loaded **once per session, not every
+  turn** (and some, like the architecture baseline, only when a task reaches for them);
 - a **session lifecycle** — `/start-session` → work → `/finalize-session` — so each
   session boots from where the last one left off and ends by improving itself;
 - a **growing identity and soul**, so the agent becomes a work *partner* that gets
@@ -24,7 +25,7 @@ It encodes one architecture that has proven itself on real autonomous projects:
 > session ends by reflecting on itself and freezing "decided on the fly" into
 > "frozen into a function."
 
-— distilled into **ten design philosophies** every generated project inherits.
+— distilled into **eleven design philosophies** every generated project inherits.
 
 ---
 
@@ -44,7 +45,7 @@ carries state forward, a built-in self-consistency check, and an identity/soul t
 compounds. You answer a short interview; you get a project that knows how to run,
 remember, and improve itself.
 
-## The ten design philosophies
+## The eleven design philosophies
 
 1. **The main agent is a CEO, not a worker** — orchestrate, don't do manual labor; the CEO keeps only the org-change decisions, the final QA, the ship step, and the closing report to the chairman.
 2. **Everything is a sub-agent; concurrency is the default** — all creation and all maintenance is employee work; every role carries paired skills; fan out at the seams; internal-first — never outsource (or spend external API credits on) what an internal sub-agent can do; external contract partners are rostered separately (engaged by contract, not managed by prompt).
@@ -52,10 +53,11 @@ remember, and improve itself.
 4. **The document system** — a thin `CLAUDE.md` router + named single-source docs loaded once per session, not every turn.
 5. **Global vs local capabilities** — reuse what's shared, build only what's unique.
 6. **Reflection is the last step, wrapped in a session lifecycle** — `/start-session` and `/finalize-session`, two loops.
-7. **Constitution-as-code** — a `doctor` command keeps `STRUCTURE.json`'s claims equal to filesystem reality.
+7. **Constitution-as-code** — a `doctor` command keeps `STRUCTURE.json`'s claims equal to filesystem reality, and a general ratchet forbids new violations while old debt is paid down on a schedule.
 8. **A standard project shape** — thin router + `documentation/` system from birth.
 9. **The agent has a growing identity and soul** — `IDENTITY.md` + `SOUL.md`; it becomes more itself each cycle.
-10. **Quality is a deterministic gate** — QA is functions, not opinions: no self-check, no report (workers); no final `validate`, no ship (CEO).
+10. **Quality is a deterministic gate** — QA is functions, not opinions: no self-check, no report (workers); no final `validate`, no ship (CEO); and at least one oracle from *outside* our own loop, because a spec, code, and tests all written by the same agent can only confirm themselves.
+11. **The codebase has a constitution too** — an **architecture baseline** the agent owns (`ARCHITECTURE.md`): invariants, who owns which state, CURRENT vs TARGET vs the evidenced GAP between them, and ADRs. Read before designing, written back before "done" — so bad structure fails *this* task instead of a future one.
 
 Full detail lives in [`SKILL.md`](./SKILL.md).
 
@@ -88,9 +90,9 @@ generated, run `/start-session` in the new project to boot it.
 
 | Path | What it is |
 |---|---|
-| [`SKILL.md`](./SKILL.md) | The meta system prompt: ten philosophies + interview protocol + generation rules. The main artifact. |
+| [`SKILL.md`](./SKILL.md) | The meta system prompt: eleven philosophies + interview protocol + generation rules. The main artifact. |
 | [`templates/CLAUDE.md.template`](./templates/CLAUDE.md.template) | The thin boot-router skeleton. |
-| [`templates/documentation/`](./templates/documentation) | One skeleton per named doc (CONSTITUTION, WORKFLOW, ROLES, IDENTITY, SOUL, MEMORY, NEXT_SESSION, CHANGELOG, INITIALIZATION, STRUCTURE.json) + reference playbooks (skill authoring, campaign maps, and two optional multi-harness/multi-project protocols). |
+| [`templates/documentation/`](./templates/documentation) | One skeleton per named doc (CONSTITUTION, WORKFLOW, ROLES, ARCHITECTURE, IDENTITY, SOUL, MEMORY, NEXT_SESSION, CHANGELOG, INITIALIZATION, STRUCTURE.json) + reference playbooks (skill authoring, campaign maps, architecture baselines, and two optional multi-harness/multi-project protocols). |
 | [`templates/skills/`](./templates/skills) | The four session-lifecycle skills (start-session, finalize-session, self-reflection, self-reflection-cli). |
 | [`templates/configuration.json.template`](./templates/configuration.json.template) | The brand single-source-of-truth. |
 | [`CHANGELOG.md`](./CHANGELOG.md) · [`VERSION`](./VERSION) | Version history + current version. |
@@ -125,9 +127,15 @@ repo (or re-clone) and reload your skills. Watch releases for new versions.
 > project, frontier-round facts-vs-decisions interviewing with recommended
 > answers (downshifting to one-question grilling where an answer is vague),
 > loop-before-hypothesis debugging, a domain glossary, task-brief contracts, and
-> an out-of-scope ledger — plus (v2.6) a second invocation mode: restructuring an
+> an out-of-scope ledger; then (v2.6) a second invocation mode — restructuring an
 > *existing* project by surveying its own docs and history instead of
-> re-interviewing the owner. Full history → [`CHANGELOG.md`](./CHANGELOG.md). (This
+> re-interviewing the owner. **v2.7** closes the last ungoverned loop with an
+> eleventh philosophy: the **architecture baseline** (`ARCHITECTURE.md` +
+> its playbook) that the agent reads before designing and writes back before
+> "done", a typed-outcome vocabulary so a fault names the layer that owns it
+> (`baseline_incomplete`, `sync_required`, `fitness_regression`, …), a generalized
+> ratchet, and a mandatory oracle from outside the agent's own loop.
+> Full history → [`CHANGELOG.md`](./CHANGELOG.md). (This
 > paragraph is rewritten, not appended to, each release.)
 
 ## Contributing

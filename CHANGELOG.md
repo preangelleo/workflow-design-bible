@@ -6,6 +6,79 @@ This project follows [Semantic Versioning](https://semver.org/).
 The skill version is mirrored in three places that must stay in sync:
 `VERSION`, the `version:` field in `SKILL.md` frontmatter, and the top entry here.
 
+## [2.7.0] — 2026-08-05
+
+**The eleventh philosophy: the codebase gets a constitution too.** Philosophies 7 and
+10 already keep two objects honest — the company's *structure* (`doctor`) and its
+*work products* (the QA chain). The third one was ungoverned: the **code** the company
+writes and maintains. Ungoverned, it decays in a way no green test can see — every
+task passes and the codebase still gets harder to change, because a test judges
+behaviour that was already declared, never who owns a piece of state, which way
+dependencies point, or whether this change made the next one more expensive. This
+release gives that verdict a durable authority and a place to live.
+
+### Added
+- **Philosophy 11 — the architecture baseline the agent owns.** Read before designing ·
+  obey while building · verify before shipping · **write back before "done"**. Its
+  disciplines: three tenses held apart (**CURRENT** with evidence / **TARGET** /
+  the **GAP ledger**) — the one doc where upgrade-by-replacement is deliberately
+  suspended; a listed gap authorizes *planning*, never an unscheduled rewrite;
+  `baseline_incomplete` over improvisation (an uncovered decision surface is a stop —
+  the expensive architectural decisions are the ones nobody noticed they were making);
+  ADRs recorded rather than remembered; **sized to the codebase**, not to the template;
+  and, where a family of projects shares a stack, a **versioned horizontal baseline**
+  that each project locks, specializes only by ADR, and extends only through candidates
+  that survive a second project.
+- **`documentation/ARCHITECTURE.md`** — a new named doc, **on demand at design time**
+  (deliberately *not* in the boot set): stack + inherited baseline · invariants ·
+  the ownership map (rule/state → its one owner → the real `path::name`) · CURRENT ·
+  TARGET · GAP ledger · ADR log · exceptions with expiry · reality signals · the
+  write-back protocol · what `doctor` enforces from it.
+- **`playbooks/architecture_baseline.md`** — the third **standard** reference playbook,
+  copied into every project: when each partition earns its place, how to bootstrap a
+  baseline for an already-drifted codebase (freeze → recover CURRENT *from the code* →
+  separate fact/guess/wish → derive TARGET → atomic GAPs → converge in parallel with
+  delivery → ratchet from day one), the typed-outcome routing table, the per-task
+  protocol, post-change design reflection, mechanization into `doctor` checks, family
+  inheritance + candidate promotion, and the anti-patterns.
+- **A typed-outcome vocabulary** for the self-healing invariant (Philosophy 1 /
+  CONSTITUTION Rule 8): a fault now names the layer that owns it —
+  `baseline_incomplete` · `architecture_conflict` · `contract_incomplete` ·
+  `planning_stale` · `evidence_required` · `sync_required` · `fitness_regression`.
+  Each **blocks** the task and routes repair upstream; none is a note attached to a
+  passing one.
+- **An oracle from outside the loop** (Philosophy 10): spec, code, tests, and
+  thresholds all written by the same agent proving each other consistent proves
+  nothing. Every project now names ≥1 signal originating outside itself (real user
+  behaviour, a third party accepting the request, crash/latency rates, a release *and*
+  its rollback really executing), landing in `reports/`.
+- **The architecture beats** in `WORKFLOW.md` for code-changing work (read → change
+  contract → verify both tenses → write back), and a tenth `/self-reflection` audit
+  dimension: is the baseline still *true*, and which prose rule is ready to graduate
+  into a `doctor` check?
+
+### Changed
+- **The drift ratchet is now general** (Philosophy 7), not just a rule about `doctor`
+  gaining checks: known debt may stand, but a new violation of the same kind may not
+  land, an existing exception may not widen, and one fix never buys another violation.
+  Stopping the divergence and paying off the debt are two different jobs — the first
+  starts immediately. This is what lets an already-messy project begin improving today.
+- **Mode B** gains the evidence-first baseline recovery ordering, with its two traps
+  named (a wish written into CURRENT; a GAP ledger read as a rewrite mandate).
+- `MEMORY.md` no longer just excludes code structure — it **points** to its new home.
+  `dev-maintainer` is now the declared owner of `ARCHITECTURE.md`, and code-changing
+  task briefs must carry the baseline slice and return the write-back.
+- `STRUCTURE.json` gains an `architecture` block (baseline · stack · inherited version ·
+  mechanized checks · gap/exception ratchet counters · reality signals);
+  `/finalize-session` gains the write-back step as an explicit **backstop, not venue**
+  (the durable write-back belongs to the task that made the change).
+
+> Provoked by an essay on the missing architectural loop in Loop Engineering — the
+> diagnosis (local success does not compose; bad design is never punished in time)
+> matched our own instincts, while its remedy of restoring human architecture review
+> did not. The Bible's answer stays agent-owned: give the code a constitution the agent
+> maintains, and make bad structure fail *this* task instead of a future one.
+
 ## [2.6.0] — 2026-07-25
 
 **Mode B: restructure an existing project — survey, don't interview.** Recovered from

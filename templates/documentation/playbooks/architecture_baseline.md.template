@@ -1,0 +1,150 @@
+# Architecture baseline — growing it, enforcing it, writing it back
+
+> **Standard reference — include in every generated project.** Read on demand by
+> whoever creates or extends `documentation/ARCHITECTURE.md` (usually
+> `dev-maintainer`), or by the CEO when a task returns `baseline_incomplete`.
+> Loaded on demand, not in the boot set.
+>
+> The baseline exists because **local success does not compose into a healthy
+> system**. Every task can pass its tests and the codebase still gets harder to
+> change: a test judges behaviour that was already declared; it never judges who
+> owns a piece of state, which way dependencies point, or whether this change made
+> the next change more expensive. Those verdicts have no fast oracle, so without a
+> durable authority they are simply never rendered — and bad structure, costing
+> nothing today, wins every time. This playbook is how that cost is moved
+> **forward** into the current task.
+
+## When each partition earns its place
+
+Start minimal. `ARCHITECTURE.md`'s default shape (stack · invariants · ownership map
+· CURRENT · TARGET · GAP · ADR · exceptions · reality signals · write-back) is
+enough for most projects for a long time. Add a partition **only** when the
+codebase has produced the pain it addresses:
+
+| Add this partition | When |
+|---|---|
+| **State & lifecycle** | Two places have written the same state, or a cache outlived what it cached |
+| **Async & identity** | A result came back after the thing that asked for it was gone (user switched, screen closed, task cancelled) |
+| **Persistence & migration** | A second store, a schema change, or a sync/compat question exists |
+| **Integration contracts** | A third party's failure semantics leaked into business logic |
+| **Errors & resilience** | Retry / timeout / fallback behaviour is being re-invented per call site |
+| **Observability** | You have had to guess what production did |
+| **Domain model** | The same noun means two things in two modules (also: sharpen the glossary in `MEMORY.md`) |
+| **Evolution plan** | Convergence needs to run in parallel with delivery over several sessions (→ the campaign map playbook) |
+
+Two rules keep this honest: a partition with no evidenced problem behind it is
+ceremony, and a rule too vague to check ("keep it clean") is worse than absent —
+it makes the doc feel authoritative while ruling out nothing.
+
+## Bootstrapping a baseline for a codebase that already drifted
+
+Order matters. Skipping a step here is how a baseline becomes fiction:
+
+1. **Freeze a snapshot** — a commit, and the dependency/module graph as it exists today.
+2. **Recover CURRENT from evidence.** Read the code, not the old design docs. Every
+   fact gets a path, a symbol, or a command output beside it.
+3. **Separate fact from guess from wish.** Anything unverified is a question, not a
+   CURRENT row. Never let a target sneak in as a description of today.
+4. **Derive TARGET from product intent + the invariants**, not from what would be
+   convenient to implement.
+5. **Compare into atomic GAPs** — each independently verifiable and closeable.
+6. **Plan convergence in parallel with delivery.** Finding gaps does **not**
+   authorize a rewrite; the plan is scheduled work like any other.
+7. **Ratchet from day one.** Do not wait for the backlog to clear before forbidding
+   new violations of the same kind. Stopping the divergence and closing the debt
+   are two different jobs; the first starts immediately.
+
+Existing design docs are **candidate evidence, not authority**. Where a doc, the
+code, and reality disagree, reconcile explicitly: accept, revise, supersede, log a
+GAP, or record an exception — and never resolve the conflict by editing the doc to
+legalize wrong code.
+
+## The typed outcome vocabulary (a fault names the layer that owns it)
+
+A red gate that only says "failed" leaves the CEO guessing where to route repair.
+Each outcome below names its owning layer, and each **changes control flow** — it
+blocks the task, it does not annotate it:
+
+| Outcome | Meaning | Routes to |
+|---|---|---|
+| `baseline_incomplete` | The task touches a decision surface the baseline doesn't cover | Extend `ARCHITECTURE.md` **first**, then build |
+| `architecture_conflict` | The local plan contradicts an accepted decision | New ADR (supersede) or drop the plan — never a silent deviation |
+| `contract_incomplete` | The design isn't specific enough to implement unambiguously | Back to design |
+| `planning_stale` | Requirements or architecture moved after the plan was made | Re-plan |
+| `evidence_required` | The conclusion has no verifiable backing | Produce the evidence |
+| `sync_required` | Code changed; the baseline hasn't recorded it | Write back, then close |
+| `fitness_regression` | A new violation, a widened exception, or debt that grew | Repair under the self-healing invariant |
+
+> `baseline_incomplete` is the one people skip, and it is the most valuable: the
+> expensive architectural decisions are the ones nobody noticed they were making.
+> An uncovered decision surface is a **stop**, not an invitation to improvise.
+
+## The per-task protocol
+
+1. **Resolve the context** — inherited baseline version + the *minimal but complete*
+   slice of this project's baseline the change touches. Conflicts inside the baseline
+   fail closed: fix the authority, don't pick the convenient text.
+2. **State the change contract** *before* designing: which behaviours, which
+   invariants it touches, whether ownership / persistence / an external boundary
+   moves, which ADRs and GAPs it hits, what it will have to write back.
+3. **Design, then build.** Implementation may not be the first place an
+   architectural decision gets made. If the design turns out unbuildable, go back to
+   the design or the baseline — do not let the code become the new de-facto fact.
+4. **Verify both tenses** — the behaviour (the QA chain) *and* the structure
+   (invariants held, ownership still single, boundaries intact, no new violation).
+5. **Write back** (the checklist at the end of `ARCHITECTURE.md`), then close.
+
+## Post-change design reflection
+
+Run it while the execution path is still in context — after compaction the evidence
+is gone. Four questions, and each one has a real answer, not a shrug:
+
+- What related change, mirrored object, or design fact did I likely **miss**?
+- Did I **bypass** an existing boundary, or **duplicate** a capability that already exists?
+- Did I introduce a rule, state, converter, or policy with **no owner**?
+- Do docs, tests, interfaces, and code still tell the **same story**?
+
+Findings become an immediate fix, a GAP row with an owner, or an ADR. They are never
+a list of concerns handed to a human.
+
+## Mechanizing: from a written rule to a `doctor` check
+
+The baseline earns its authority by becoming executable. Each invariant should be on
+a path from prose → convention → mechanical check:
+
+- Dependency-direction and import-boundary scans (AST / import graph).
+- Every ownership-map symbol resolves to a real `path::name`.
+- Duplicate-projection detection for the rules you have declared single-owner.
+- Exception expiry; the exception's frozen scope list may only shrink.
+- Violation counters for known debt that may only decrease — the ratchet.
+- Code changed under a module whose CURRENT rows didn't → `sync_required`.
+
+The **drift ratchet** applies here exactly as it does to the company's structure:
+whenever an architectural drift escapes `doctor` and a human catches it, the fix
+ships **together with** the check that would have caught it, with the incident in
+the check's docstring. `doctor` only ever gains checks.
+
+## Inheriting a shared baseline across a family of projects
+
+When several projects share a stack, the reusable half of their architecture
+judgment belongs in **one versioned horizontal baseline**, and each project's
+baseline holds only how those rules land *here* — which module, which symbol, which
+evidence. Then:
+
+- A project **locks a version** and upgrades explicitly. There is no silent drift.
+- A project may specialize — by **ADR**, naming the rule, the reason, the scope, and
+  the cost. Never by copying the rule and quietly changing its meaning.
+- A lesson learned here becomes a **candidate**, not an edit: it names the stack, the
+  evidence, what it might break, and the migration cost. It is promoted into a new
+  shared version only after it survives independent review and a second project.
+
+> One project's local success is not a mandate for every other project. Promotion is
+> earned across projects; that is the whole point of keeping the two tiers apart.
+
+## Anti-patterns
+
+- **Wishes in CURRENT.** The fastest way to make the baseline worthless.
+- **A GAP list read as a refactor mandate.** Finding debt authorizes planning, not a rewrite.
+- **Documented ≠ in force.** A baseline that no task is required to read is a file, not an authority.
+- **Editing the doc to legalize the code.** Reconcile explicitly; never retroactively.
+- **Waiting for a perfect baseline.** Minimal and enforced beats comprehensive and advisory. Start with the invariants and the ownership map; the next real task grows the rest.

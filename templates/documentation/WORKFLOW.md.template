@@ -53,6 +53,28 @@ e.g.  after script-ready ──┬─▶ structure
   vs spec-compliance), dispatch one reviewer per axis in parallel and keep the
   verdicts side by side — merging them lets one axis mask the other.
 
+## 🏛️ The architecture beats (Philosophy 11 — for work that changes *code*)
+The spine above produces the product; this beat governs the code that produces it
+(the CLI, the skills, the role prompts, {{the product's own source}}). It runs
+whenever `dev-maintainer` is dispatched, and it is **four beats, not a review**:
+
+1. **Read** — load the minimal-but-complete slice of `documentation/ARCHITECTURE.md`
+   this change touches (invariants · ownership map · the relevant CURRENT/TARGET/GAP/ADR).
+2. **State the change contract** *before* designing: which invariants it touches,
+   whether ownership / persistence / an external boundary moves, which ADRs and GAPs
+   it hits, what it will write back. Touching an uncovered decision surface →
+   **`baseline_incomplete`**: extend the baseline first, then build.
+3. **Verify both tenses** — behaviour via the QA chain below, *structure* via
+   `{{core}} doctor`'s architecture checks (invariants held · ownership still single ·
+   boundaries intact · **no new violation and no widened exception** — the ratchet).
+4. **Write back before "done"** — new CURRENT fact (with evidence) · new or superseded
+   ADR · GAP opened/shrunk/closed. Plus the post-change reflection while the execution
+   path is still in context: what did I miss · did I bypass a boundary or duplicate an
+   existing capability · did I leave a rule/state with no owner · do docs, tests, and
+   code still tell one story. Unwritten = **`sync_required`** = not done.
+
+> Procedure and the full typed-outcome routing table → `playbooks/architecture_baseline.md`.
+
 ## ⏸️ Gates (where the CEO must verify before moving on)
 - {{gate 1, e.g. quality gate before publish → playbooks/quality_gate.md}}
 - {{gate 2, e.g. the #1 iron-law check → CONSTITUTION.md}}

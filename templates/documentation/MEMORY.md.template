@@ -39,5 +39,7 @@
 > above is the index; the vector store is the library.
 
 ## 🚫 What does NOT go here
-Code structure, past bug fixes, git history, anything in CONSTITUTION.md or a playbook —
-those are derivable or already documented. Memory holds only the non-obvious, non-derivable.
+Past bug fixes, git history, anything in CONSTITUTION.md or a playbook — derivable or
+already documented. **Code structure has its own home:** invariants, ownership,
+CURRENT/TARGET/GAP, and architectural decisions belong in `ARCHITECTURE.md`, not here.
+Memory holds only the non-obvious, non-derivable *project* knowledge.

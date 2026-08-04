@@ -31,22 +31,33 @@ description: Soft-shutdown a work session for {{PROJECT_NAME}}. Reflects on the 
      decision-grade insights, not a journal — coverage is not learning; wait for
      evidence. Delete anything now covered by a doc or the code.
 
-4. **Rewrite `NEXT_SESSION.md` WHOLE** (delete the body, write fresh — never append):
+4. **Write back the architecture baseline** (Philosophy 11) — only if code changed this
+   session, and only for what the change *actually* moved: a new CURRENT fact (with its
+   evidence), a new or superseded **ADR**, a **GAP** opened, shrunk, or closed. Then the
+   post-change reflection: what did I miss · did I bypass a boundary or duplicate an
+   existing capability · did I leave a rule/state/converter with no owner · do docs,
+   tests, and code still tell one story? Each finding becomes an immediate fix, a GAP
+   row with an owner, or an ADR — never a concern handed to the chairman.
+   > This is the **backstop, not the venue**: the durable write-back belongs to the task
+   > that made the change, while the execution path was still in context (`sync_required`).
+   > Anything first discovered here is a Loop-0 miss worth noting in the reflection.
+
+5. **Rewrite `NEXT_SESSION.md` WHOLE** (delete the body, write fresh — never append):
    what we did · current state · next session's concrete goals + cold-start context.
    This is the single most important output — the next session boots from it.
 
-5. **Re-condense `CHANGELOG.md`:** re-summarize the entire existing history into a
+6. **Re-condense `CHANGELOG.md`:** re-summarize the entire existing history into a
    tighter digest (older entries compress hardest), then append this session's change
    at the top. It must come out **shorter or denser, never longer**.
 
-6. **Update `STRUCTURE.json`** if any agent/skill/CLI/doc was added or removed this session.
+7. **Update `STRUCTURE.json`** if any agent/skill/CLI/doc was added or removed this session.
 
-7. **Run `{{core}} doctor`** — it must pass (claims == reality). If it fails, fix the
+8. **Run `{{core}} doctor`** — it must pass (claims == reality). If it fails, fix the
    drift now; a red doctor means the docs lie to the next session.
 
-8. **Commit (if the user wants):** per the project's git strategy, a clean commit of the
+9. **Commit (if the user wants):** per the project's git strategy, a clean commit of the
    docs + any code changes. {{Follow the repo's commit conventions.}}
 
-9. **Report to the chairman & sign off** in character — the CEO's closing (Philosophy 1):
+10. **Report to the chairman & sign off** in character — the CEO's closing (Philosophy 1):
    what shipped, what it cost, what broke and self-healed, what changed in the org —
    then "here's where I'm leaving us; next session starts with {{…}}."

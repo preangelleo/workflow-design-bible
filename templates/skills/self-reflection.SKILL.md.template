@@ -21,6 +21,8 @@ description: Deep periodic audit of the WHOLE {{PROJECT_NAME}} workflow architec
 8. **Loop closure** — are both reflection loops actually closing? Is `SOUL.md` growing healthily (not bloating)?
 9. **The QA chain (Philosophy 10)** — does every spine step have a real QA function (not a rubber stamp)? Are self-checks actually attached to reports? Is `validate` still measuring what matters? Any `[artisanal]` industrialization debt ready to retire? Any external LLM-API spend an internal sub-agent could replace (internal-first)?
 
+10. **The architecture baseline (Philosophy 11)** — is `ARCHITECTURE.md` still *true*: does CURRENT match the code, does every ownership-map symbol still resolve, are the invariants actually enforced or merely written? Any GAP that has quietly widened, any exception past its expiry, any decision made in code that never became an ADR? Which prose rule is ready to graduate into a `doctor` check? And is a **reality signal from outside our own loop** still arriving — or have we been grading our own homework?
+
 ## Output: a REFINE & UPGRADE plan
 - Group findings by dimension; for each: the issue → root cause → proposed change → effort/risk.
 - **Order by leverage** (biggest correctness/efficiency win first).

@@ -9,6 +9,7 @@
     "documentation/INITIALIZATION.md",
     "documentation/WORKFLOW.md",
     "documentation/ROLES.md",
+    "documentation/ARCHITECTURE.md",
     "documentation/IDENTITY.md",
     "documentation/SOUL.md",
     "documentation/MEMORY.md",
@@ -54,6 +55,16 @@
     "final_validate": "{{core}} validate",
     "ship": "{{core}} ship",
     "artisanal_debt": ["{{steps with no executing function yet}}"]
+  },
+  "architecture": {
+    "$comment": "Philosophy 11 — the code's own baseline. `doctor` mechanizes these one at a time (prose → convention → check); the drift ratchet applies: every architectural drift a human catches ships with the check that would have caught it. open_gaps/exceptions counts are ratchet counters — they may shrink, never grow.",
+    "baseline": "documentation/ARCHITECTURE.md",
+    "stack": "{{language / framework / runtime}}",
+    "inherits": { "name": "{{none | shared horizontal baseline name}}", "version": "{{X.Y}}" },
+    "checks": ["{{dependency-direction scan}}", "{{ownership symbols resolve}}", "{{exception expiry}}", "{{violation counters}}"],
+    "open_gaps": 0,
+    "exceptions": 0,
+    "reality_signals": ["{{the ≥1 oracle from outside our own loop — Philosophy 10}}"]
   },
   "memory": {
     "lightweight": "documentation/MEMORY.md",
